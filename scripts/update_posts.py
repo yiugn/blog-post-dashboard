@@ -14,7 +14,6 @@ from pathlib import Path
 from typing import Any
 
 import requests
-from bs4 import BeautifulSoup
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG_PATH = ROOT / "config" / "blogs.json"
@@ -116,22 +115,6 @@ def collect_wikidocs(
     return result
 
 
-def tilnote_profile() -> tuple[str, list[dict[str, Any]], int]:
-    response = requests.get(
-        "https://tilnote.io/@knarchive",
-        headers={"User-Agent": USER_AGENT},
-        timeout=TIMEOUT,
-    )
-    response.raise_for_status()
-    soup = BeautifulSoup(response.text, "html.parser")
-    node = soup.find("script", id="__NEXT_DATA__")
-    if not node or not node.string:
-        raise RuntimeError("Tilnote __NEXT_DATA__ was not found")
-    data = json.loads(node.string)
-    ssr = data["props"]["pageProps"]["ssrData"]
-    return str(ssr["userId"]), list(ssr.get("pages", [])), int(ssr.get("lastPage", 1))
-
-
 def fetch_tilnote_page(user_id: str, page: int) -> tuple[int, list[dict[str, Any]], int]:
     session = requests.Session()
     session.headers.update({"User-Agent": USER_AGENT})
@@ -151,34 +134,35 @@ def collect_tilnote(
     collected_at: str,
     previous_state: dict[str, Any],
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
-    user_id, first_rows, last_page = tilnote_profile()
+    user_id = str(blog["source_id"])
+    last_page = int(
+        previous_state.get("total_pages") or blog.get("initial_last_page") or 1
+    )
     completed_pages = {
         int(page)
         for page in previous_state.get("completed_pages", [])
         if str(page).isdigit() and 1 <= int(page) <= last_page
     }
-    completed_pages.add(1)
-    first_keys = {
-        f"Tilnote:{blog['slug']}:{row.get('_id')}" for row in first_rows if row.get("_id")
-    }
-    all_rows = list(first_rows)
+    all_rows: list[dict[str, Any]] = []
     missing_pages = [
-        page for page in range(2, last_page + 1) if page not in completed_pages
+        page for page in range(1, last_page + 1) if page not in completed_pages
     ]
+    pages_to_fetch = sorted(set(missing_pages + [1]))
 
     failed_pages: list[int] = []
-    if missing_pages:
+    if pages_to_fetch:
         with ThreadPoolExecutor(max_workers=8) as pool:
             futures = {
                 pool.submit(fetch_tilnote_page, user_id, page): page
-                for page in missing_pages
+                for page in pages_to_fetch
             }
             fetched: dict[int, list[dict[str, Any]]] = {}
             processed = 0
             for future in as_completed(futures):
                 source_page = futures[future]
                 try:
-                    page, rows, _ = future.result()
+                    page, rows, observed_last_page = future.result()
+                    last_page = max(last_page, observed_last_page)
                     fetched[page] = rows
                     completed_pages.add(page)
                 except Exception:
@@ -186,7 +170,7 @@ def collect_tilnote(
                 processed += 1
                 if processed % 50 == 0:
                     print(
-                        f"Tilnote bootstrap: {processed}/{len(missing_pages)} page attempts",
+                        f"Tilnote bootstrap: {processed}/{len(pages_to_fetch)} page attempts",
                         flush=True,
                     )
             for page in sorted(fetched):
@@ -278,10 +262,9 @@ def main() -> int:
         errors.append(f"{tilnote['blog_name']}: {exc}")
 
     if errors:
-        print("Collection failed:", file=sys.stderr)
+        print("Collection completed with deferred source error(s):", file=sys.stderr)
         for error in errors:
             print(f"- {error}", file=sys.stderr)
-        return 1
 
     merged = {row["key"]: row for row in existing if row.get("key")}
     for row in new_posts:
@@ -309,6 +292,7 @@ def main() -> int:
         "blog_count": len(blogs),
         "counts": counts,
         "source_state": {"tilnote": tilnote_state},
+        "collection_errors": errors,
         "posts": posts,
     }
     JSON_PATH.parent.mkdir(parents=True, exist_ok=True)
