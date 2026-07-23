@@ -6,3 +6,6 @@ __pycache__/
 .DS_Store
 Thumbs.db
 dashboard-preview.png
+*.log
+*.pid
+tilnote-last-page.json

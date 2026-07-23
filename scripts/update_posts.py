@@ -88,7 +88,9 @@ def collect_wikidocs(
             if key in known_ids:
                 saw_known = True
                 continue
-            title = str(first_value(item, ("subject", "title", "name")) or "(제목 없음)").strip()
+            title = " ".join(
+                str(first_value(item, ("subject", "title", "name")) or "(제목 없음)").split()
+            )
             published_at = normalise_date(
                 first_value(item, ("create_date", "created_at", "created", "pub_date"))
             )
@@ -193,7 +195,9 @@ def collect_tilnote(
                 "blog_url": blog["blog_url"],
                 "account_masked": blog["account_masked"],
                 "post_id": post_id,
-                "title": str(item.get("title") or "(제목 없음)").strip(),
+                "title": " ".join(
+                    str(item.get("title") or "(제목 없음)").split()
+                ),
                 "post_url": f"https://tilnote.io/pages/{post_id}",
                 "published_at": normalise_date(item.get("createdAt")),
                 "first_seen_at": collected_at,
@@ -311,7 +315,9 @@ def main() -> int:
         "first_seen_at",
     ]
     with CSV_PATH.open("w", encoding="utf-8-sig", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fields, extrasaction="ignore")
+        writer = csv.DictWriter(
+            handle, fieldnames=fields, extrasaction="ignore", lineterminator="\n"
+        )
         writer.writeheader()
         writer.writerows(posts)
     print(f"Saved {len(posts)} total post(s); {len(new_posts)} new.")
