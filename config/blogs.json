@@ -1,0 +1,107 @@
+[
+  {
+    "platform": "WikiDocs",
+    "slug": "aitechnote",
+    "blog_name": "AI 테크 최신 정보 매거진",
+    "blog_url": "https://wikidocs.net/blog/@aitechnote/",
+    "account_masked": "yiu***@gmail.com"
+  },
+  {
+    "platform": "WikiDocs",
+    "slug": "insightbridge",
+    "blog_name": "인사이트 브리지",
+    "blog_url": "https://wikidocs.net/blog/@insightbridge/",
+    "account_masked": "yiu***@gmail.com"
+  },
+  {
+    "platform": "WikiDocs",
+    "slug": "systrader79",
+    "blog_name": "systrader79의 트레이딩 이야기",
+    "blog_url": "https://wikidocs.net/blog/@systrader79/",
+    "account_masked": "sys***@gmail.com"
+  },
+  {
+    "platform": "WikiDocs",
+    "slug": "history",
+    "blog_name": "모든 것의 역사",
+    "blog_url": "https://wikidocs.net/blog/@history/",
+    "account_masked": "del***@naver.com"
+  },
+  {
+    "platform": "WikiDocs",
+    "slug": "studylibrary",
+    "blog_name": "학문의 서재",
+    "blog_url": "https://wikidocs.net/blog/@studylibrary/",
+    "account_masked": "lak***@naver.com"
+  },
+  {
+    "platform": "WikiDocs",
+    "slug": "infoplant",
+    "blog_name": "지식 발전소",
+    "blog_url": "https://wikidocs.net/blog/@infoplant/",
+    "account_masked": "yiu***@naver.com"
+  },
+  {
+    "platform": "WikiDocs",
+    "slug": "knarchive",
+    "blog_name": "지식 저장소",
+    "blog_url": "https://wikidocs.net/blog/@knarchive/",
+    "account_masked": "ech***@naver.com"
+  },
+  {
+    "platform": "WikiDocs",
+    "slug": "smartliving",
+    "blog_name": "스마트 리빙",
+    "blog_url": "https://wikidocs.net/blog/@smartliving/",
+    "account_masked": "woo***@genehealth.or.kr"
+  },
+  {
+    "platform": "WikiDocs",
+    "slug": "cartemlab",
+    "blog_name": "카템 연구소",
+    "blog_url": "https://wikidocs.net/blog/@cartemlab/",
+    "account_masked": "yiu***@kakao.com"
+  },
+  {
+    "platform": "WikiDocs",
+    "slug": "petpicknote",
+    "blog_name": "펫 픽 노트",
+    "blog_url": "https://wikidocs.net/blog/@petpicknote/",
+    "account_masked": "kna***@gmail.com"
+  },
+  {
+    "platform": "WikiDocs",
+    "slug": "newssignal",
+    "blog_name": "뉴스 시그널",
+    "blog_url": "https://wikidocs.net/blog/@newssignal/",
+    "account_masked": "yiu***+01@gmail.com"
+  },
+  {
+    "platform": "WikiDocs",
+    "slug": "techinsight",
+    "blog_name": "테크 인사이트",
+    "blog_url": "https://wikidocs.net/blog/@techinsight/",
+    "account_masked": "yiu***+02@gmail.com"
+  },
+  {
+    "platform": "WikiDocs",
+    "slug": "lifesolution",
+    "blog_name": "라이프 솔루션",
+    "blog_url": "https://wikidocs.net/blog/@lifesolution/",
+    "account_masked": "yiu***+03@gmail.com"
+  },
+  {
+    "platform": "WikiDocs",
+    "slug": "solobizstack",
+    "blog_name": "SoloBiz Stack",
+    "blog_url": "https://wikidocs.net/blog/@solobizstack/",
+    "account_masked": "yiu***+04@gmail.com"
+  },
+  {
+    "platform": "Tilnote",
+    "slug": "knarchive",
+    "blog_name": "knarchive",
+    "blog_url": "https://tilnote.io/@knarchive",
+    "account_masked": ""
+  }
+]
