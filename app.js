@@ -123,6 +123,13 @@ async function loadData() {
     $("#total-posts").textContent = formatNumber(state.posts.length);
     $("#blog-count").textContent = formatNumber(data.blog_count || 15);
     $("#updated-at").textContent = data.generated_at ? formatDate(data.generated_at, true) : "첫 수집 대기 중";
+    const tilnoteState = data.source_state?.tilnote;
+    const updateNote = document.querySelector(".updated-card small");
+    if (tilnoteState && !tilnoteState.history_complete) {
+      updateNote.textContent = `전체 이력 수집 ${formatNumber(tilnoteState.completed_count)} / ${formatNumber(tilnoteState.total_pages)} 페이지`;
+    } else {
+      updateNote.textContent = "매시 17분 자동 수집 · 화면은 5분마다 확인";
+    }
     const dayAgo = Date.now() - 24 * 60 * 60 * 1000;
     const recent = state.posts.filter((post) => new Date(post.first_seen_at).getTime() >= dayAgo).length;
     $("#recent-count").textContent = formatNumber(recent);

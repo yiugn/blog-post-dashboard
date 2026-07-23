@@ -33,7 +33,7 @@ jobs:
       - name: Install collector dependencies
         run: pip install -r requirements.txt
 
-      - name: Collect all new posts
+      - name: Collect new posts and resume historical crawl
         env:
           WIKIDOCS_BLOGS_JSON: ${{ secrets.WIKIDOCS_BLOGS_JSON }}
         run: python scripts/update_posts.py

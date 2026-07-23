@@ -135,32 +135,60 @@ def tilnote_profile() -> tuple[str, list[dict[str, Any]], int]:
 def fetch_tilnote_page(user_id: str, page: int) -> tuple[int, list[dict[str, Any]], int]:
     session = requests.Session()
     session.headers.update({"User-Agent": USER_AGENT})
-    payload = get_json(
-        session, f"https://server.tilnote.io/api/blogs/{user_id}/pages?page={page}"
+    response = session.get(
+        f"https://server.tilnote.io/api/blogs/{user_id}/pages?page={page}",
+        timeout=20,
     )
+    response.raise_for_status()
+    payload = response.json()
     data = payload.get("data", {})
     return page, list(data.get("pages", [])), int(data.get("lastPage", page))
 
 
 def collect_tilnote(
-    blog: dict[str, Any], known_ids: set[str], collected_at: str
-) -> list[dict[str, Any]]:
+    blog: dict[str, Any],
+    known_ids: set[str],
+    collected_at: str,
+    previous_state: dict[str, Any],
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     user_id, first_rows, last_page = tilnote_profile()
-    pages_to_fetch = [1]
+    completed_pages = {
+        int(page)
+        for page in previous_state.get("completed_pages", [])
+        if str(page).isdigit() and 1 <= int(page) <= last_page
+    }
+    completed_pages.add(1)
     first_keys = {
         f"Tilnote:{blog['slug']}:{row.get('_id')}" for row in first_rows if row.get("_id")
     }
-    incremental = bool(first_keys & known_ids)
     all_rows = list(first_rows)
+    missing_pages = [
+        page for page in range(2, last_page + 1) if page not in completed_pages
+    ]
 
-    if not incremental and last_page > 1:
-        pages_to_fetch = list(range(2, last_page + 1))
+    failed_pages: list[int] = []
+    if missing_pages:
         with ThreadPoolExecutor(max_workers=8) as pool:
-            futures = [pool.submit(fetch_tilnote_page, user_id, page) for page in pages_to_fetch]
+            futures = {
+                pool.submit(fetch_tilnote_page, user_id, page): page
+                for page in missing_pages
+            }
             fetched: dict[int, list[dict[str, Any]]] = {}
+            processed = 0
             for future in as_completed(futures):
-                page, rows, _ = future.result()
-                fetched[page] = rows
+                source_page = futures[future]
+                try:
+                    page, rows, _ = future.result()
+                    fetched[page] = rows
+                    completed_pages.add(page)
+                except Exception:
+                    failed_pages.append(source_page)
+                processed += 1
+                if processed % 50 == 0:
+                    print(
+                        f"Tilnote bootstrap: {processed}/{len(missing_pages)} page attempts",
+                        flush=True,
+                    )
             for page in sorted(fetched):
                 all_rows.extend(fetched[page])
 
@@ -188,9 +216,22 @@ def collect_tilnote(
                 "last_seen_at": collected_at,
             }
         )
-    scanned = 1 if incremental else last_page
-    print(f"Tilnote @{blog['slug']}: {len(result)} new post(s), scanned {scanned} page(s)")
-    return result
+    remaining = last_page - len(completed_pages)
+    state = {
+        "total_pages": last_page,
+        "completed_pages": sorted(completed_pages),
+        "completed_count": len(completed_pages),
+        "remaining_pages": remaining,
+        "history_complete": remaining == 0,
+        "last_attempt_at": collected_at,
+    }
+    print(
+        f"Tilnote @{blog['slug']}: {len(result)} new post(s), "
+        f"history {len(completed_pages)}/{last_page} pages, "
+        f"{len(failed_pages)} page attempt(s) deferred",
+        flush=True,
+    )
+    return result, state
 
 
 def main() -> int:
@@ -227,8 +268,12 @@ def main() -> int:
                 errors.append(f"{blog['blog_name']}: {exc}")
 
     tilnote = next(blog for blog in blogs if blog["platform"] == "Tilnote")
+    tilnote_state = dict(existing_doc.get("source_state", {}).get("tilnote", {}))
     try:
-        new_posts.extend(collect_tilnote(tilnote, known_ids, collected_at))
+        tilnote_posts, tilnote_state = collect_tilnote(
+            tilnote, known_ids, collected_at, tilnote_state
+        )
+        new_posts.extend(tilnote_posts)
     except Exception as exc:
         errors.append(f"{tilnote['blog_name']}: {exc}")
 
@@ -263,6 +308,7 @@ def main() -> int:
         "total_posts": len(posts),
         "blog_count": len(blogs),
         "counts": counts,
+        "source_state": {"tilnote": tilnote_state},
         "posts": posts,
     }
     JSON_PATH.parent.mkdir(parents=True, exist_ok=True)
