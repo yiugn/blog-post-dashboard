@@ -4,8 +4,10 @@
 from __future__ import annotations
 
 import csv
+import html
 import json
 import os
+import re
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -21,6 +23,11 @@ JSON_PATH = ROOT / "data" / "posts.json"
 CSV_PATH = ROOT / "data" / "posts.csv"
 USER_AGENT = "Blog-Post-Dashboard/1.0 (+GitHub Actions)"
 TIMEOUT = 40
+SCHEMA_DEBUG = os.environ.get("COLLECTOR_SCHEMA_DEBUG", "").lower() in {
+    "1",
+    "true",
+    "yes",
+}
 
 
 def utc_now() -> str:
@@ -80,6 +87,44 @@ def collect_wikidocs(
         rows = payload.get("blog_pages")
         if not isinstance(rows, list) or not rows:
             break
+        if SCHEMA_DEBUG and page == 1 and rows:
+            print(
+                f"SCHEMA WikiDocs @{blog['slug']} list fields: "
+                f"{sorted(rows[0].keys())}",
+                flush=True,
+            )
+            try:
+                public_response = session.get(
+                    blog["blog_url"],
+                    params={"page": 1, "schema_debug": int(time.time())},
+                    timeout=TIMEOUT,
+                )
+                public_response.raise_for_status()
+                first_id = str(rows[0].get("id", ""))
+                card_match = re.search(
+                    rf'<a[^>]+href=["\']/blog/@{re.escape(blog["slug"])}/{re.escape(first_id)}/["\'][\s\S]*?</a>',
+                    public_response.text,
+                    flags=re.IGNORECASE,
+                )
+                if card_match:
+                    card_text = re.sub(r"<[^>]+>", " ", card_match.group(0))
+                    card_text = " ".join(html.unescape(card_text).split())
+                    print(
+                        f"SCHEMA WikiDocs @{blog['slug']} first public card text: "
+                        f"{card_text[:800]}",
+                        flush=True,
+                    )
+                else:
+                    print(
+                        f"SCHEMA WikiDocs @{blog['slug']} public card: not matched",
+                        flush=True,
+                    )
+            except requests.RequestException as exc:
+                print(
+                    f"SCHEMA WikiDocs @{blog['slug']} public page unavailable: "
+                    f"{type(exc).__name__}",
+                    flush=True,
+                )
         for item in rows:
             post_id = str(item.get("id", "")).strip()
             if not post_id:
