@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-26T03:59:31Z",
-  "total_posts": 17463,
+  "generated_at": "2026-07-26T06:49:03Z",
+  "total_posts": 17471,
   "blog_count": 15,
   "counts": {
     "WikiDocs:aitechnote": 150,
@@ -16,7 +16,7 @@
     "WikiDocs:newssignal": 30,
     "WikiDocs:techinsight": 30,
     "WikiDocs:lifesolution": 30,
-    "WikiDocs:solobizstack": 51,
+    "WikiDocs:solobizstack": 59,
     "Tilnote:knarchive": 14163
   },
   "source_state": {
@@ -735,11 +735,123 @@
       "completed_count": 708,
       "remaining_pages": 3,
       "history_complete": false,
-      "last_attempt_at": "2026-07-26T03:59:31Z"
+      "last_attempt_at": "2026-07-26T06:49:03Z"
     }
   },
   "collection_errors": [],
   "posts": [
+    {
+      "key": "WikiDocs:solobizstack:26425",
+      "platform": "WikiDocs",
+      "slug": "solobizstack",
+      "blog_name": "SoloBiz Stack",
+      "blog_url": "https://wikidocs.net/blog/@solobizstack/",
+      "account_masked": "yiu***+04@gmail.com",
+      "post_id": "26425",
+      "title": "코드 없이 249개 후기 4.8점, Framer로 홈페이지를 하루 만에 완성했다는 사람들",
+      "post_url": "https://wikidocs.net/blog/@solobizstack/26425/",
+      "published_at": "",
+      "first_seen_at": "2026-07-26T06:49:03Z",
+      "last_seen_at": "2026-07-26T06:49:03Z"
+    },
+    {
+      "key": "WikiDocs:solobizstack:26424",
+      "platform": "WikiDocs",
+      "slug": "solobizstack",
+      "blog_name": "SoloBiz Stack",
+      "blog_url": "https://wikidocs.net/blog/@solobizstack/",
+      "account_masked": "yiu***+04@gmail.com",
+      "post_id": "26424",
+      "title": "5.0점 만점, 44개 리뷰 전부 극찬한 CRM Attio가 특별한 이유",
+      "post_url": "https://wikidocs.net/blog/@solobizstack/26424/",
+      "published_at": "",
+      "first_seen_at": "2026-07-26T06:49:03Z",
+      "last_seen_at": "2026-07-26T06:49:03Z"
+    },
+    {
+      "key": "WikiDocs:solobizstack:26423",
+      "platform": "WikiDocs",
+      "slug": "solobizstack",
+      "blog_name": "SoloBiz Stack",
+      "blog_url": "https://wikidocs.net/blog/@solobizstack/",
+      "account_masked": "yiu***+04@gmail.com",
+      "post_id": "26423",
+      "title": "바탕화면 스크린샷 지옥, 무료 맥 앱 하나로 완전히 탈출했습니다",
+      "post_url": "https://wikidocs.net/blog/@solobizstack/26423/",
+      "published_at": "",
+      "first_seen_at": "2026-07-26T06:49:03Z",
+      "last_seen_at": "2026-07-26T06:49:03Z"
+    },
+    {
+      "key": "WikiDocs:solobizstack:26422",
+      "platform": "WikiDocs",
+      "slug": "solobizstack",
+      "blog_name": "SoloBiz Stack",
+      "blog_url": "https://wikidocs.net/blog/@solobizstack/",
+      "account_masked": "yiu***+04@gmail.com",
+      "post_id": "26422",
+      "title": "구독료 0원 자동화, 개발자들이 Zapier 대신 n8n으로 갈아타는 이유",
+      "post_url": "https://wikidocs.net/blog/@solobizstack/26422/",
+      "published_at": "",
+      "first_seen_at": "2026-07-26T06:49:03Z",
+      "last_seen_at": "2026-07-26T06:49:03Z"
+    },
+    {
+      "key": "WikiDocs:solobizstack:26421",
+      "platform": "WikiDocs",
+      "slug": "solobizstack",
+      "blog_name": "SoloBiz Stack",
+      "blog_url": "https://wikidocs.net/blog/@solobizstack/",
+      "account_masked": "yiu***+04@gmail.com",
+      "post_id": "26421",
+      "title": "영상 편집 몰라도 1분 완성, 4.9점 Screen Studio로 만드는 데모 영상",
+      "post_url": "https://wikidocs.net/blog/@solobizstack/26421/",
+      "published_at": "",
+      "first_seen_at": "2026-07-26T06:49:03Z",
+      "last_seen_at": "2026-07-26T06:49:03Z"
+    },
+    {
+      "key": "WikiDocs:solobizstack:26420",
+      "platform": "WikiDocs",
+      "slug": "solobizstack",
+      "blog_name": "SoloBiz Stack",
+      "blog_url": "https://wikidocs.net/blog/@solobizstack/",
+      "account_masked": "yiu***+04@gmail.com",
+      "post_id": "26420",
+      "title": "맥북 생산성 4.9점의 비밀, 31000명이 매일 쓰는 Raycast 완전 정리",
+      "post_url": "https://wikidocs.net/blog/@solobizstack/26420/",
+      "published_at": "",
+      "first_seen_at": "2026-07-26T06:49:03Z",
+      "last_seen_at": "2026-07-26T06:49:03Z"
+    },
+    {
+      "key": "WikiDocs:solobizstack:26419",
+      "platform": "WikiDocs",
+      "slug": "solobizstack",
+      "blog_name": "SoloBiz Stack",
+      "blog_url": "https://wikidocs.net/blog/@solobizstack/",
+      "account_masked": "yiu***+04@gmail.com",
+      "post_id": "26419",
+      "title": "화상회의 봇 없이 회의록 자동 정리, 4.8점 Granola가 정말 시간을 아껴줄까",
+      "post_url": "https://wikidocs.net/blog/@solobizstack/26419/",
+      "published_at": "",
+      "first_seen_at": "2026-07-26T06:49:03Z",
+      "last_seen_at": "2026-07-26T06:49:03Z"
+    },
+    {
+      "key": "WikiDocs:solobizstack:26418",
+      "platform": "WikiDocs",
+      "slug": "solobizstack",
+      "blog_name": "SoloBiz Stack",
+      "blog_url": "https://wikidocs.net/blog/@solobizstack/",
+      "account_masked": "yiu***+04@gmail.com",
+      "post_id": "26418",
+      "title": "코딩 몰라도 20배 빠르게 앱을 만든다는 Lovable, 후기 196개로 검증해봤습니다",
+      "post_url": "https://wikidocs.net/blog/@solobizstack/26418/",
+      "published_at": "",
+      "first_seen_at": "2026-07-26T06:49:03Z",
+      "last_seen_at": "2026-07-26T06:49:03Z"
+    },
     {
       "key": "WikiDocs:solobizstack:26417",
       "platform": "WikiDocs",
