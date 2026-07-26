@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-26T00:15:21Z",
-  "total_posts": 17462,
+  "generated_at": "2026-07-26T03:59:31Z",
+  "total_posts": 17463,
   "blog_count": 15,
   "counts": {
     "WikiDocs:aitechnote": 150,
@@ -16,7 +16,7 @@
     "WikiDocs:newssignal": 30,
     "WikiDocs:techinsight": 30,
     "WikiDocs:lifesolution": 30,
-    "WikiDocs:solobizstack": 50,
+    "WikiDocs:solobizstack": 51,
     "Tilnote:knarchive": 14163
   },
   "source_state": {
@@ -735,11 +735,25 @@
       "completed_count": 708,
       "remaining_pages": 3,
       "history_complete": false,
-      "last_attempt_at": "2026-07-26T00:15:21Z"
+      "last_attempt_at": "2026-07-26T03:59:31Z"
     }
   },
   "collection_errors": [],
   "posts": [
+    {
+      "key": "WikiDocs:solobizstack:26417",
+      "platform": "WikiDocs",
+      "slug": "solobizstack",
+      "blog_name": "SoloBiz Stack",
+      "blog_url": "https://wikidocs.net/blog/@solobizstack/",
+      "account_masked": "yiu***+04@gmail.com",
+      "post_id": "26417",
+      "title": "Wispr Flow 완벽 정리: 말하면 4배 빠르게 써지는 AI 받아쓰기 앱 (가격·후기)",
+      "post_url": "https://wikidocs.net/blog/@solobizstack/26417/",
+      "published_at": "",
+      "first_seen_at": "2026-07-26T03:59:31Z",
+      "last_seen_at": "2026-07-26T03:59:31Z"
+    },
     {
       "key": "WikiDocs:lifesolution:26370",
       "platform": "WikiDocs",
