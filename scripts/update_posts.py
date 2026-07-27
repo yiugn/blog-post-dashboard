@@ -4,16 +4,15 @@
 from __future__ import annotations
 
 import csv
-import html
 import json
 import os
-import re
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo
 
 import requests
 
@@ -23,15 +22,33 @@ JSON_PATH = ROOT / "data" / "posts.json"
 CSV_PATH = ROOT / "data" / "posts.csv"
 USER_AGENT = "Blog-Post-Dashboard/1.0 (+GitHub Actions)"
 TIMEOUT = 40
-SCHEMA_DEBUG = os.environ.get("COLLECTOR_SCHEMA_DEBUG", "").lower() in {
-    "1",
-    "true",
-    "yes",
-}
+KST = ZoneInfo("Asia/Seoul")
 
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def kst_date(value: Any) -> str:
+    if not value:
+        return ""
+    text = str(value).strip()
+    try:
+        parsed = datetime.fromisoformat(text.replace("Z", "+00:00"))
+        if parsed.tzinfo is None:
+            parsed = parsed.replace(tzinfo=timezone.utc)
+        return parsed.astimezone(KST).date().isoformat()
+    except ValueError:
+        return text[:10] if len(text) >= 10 else ""
+
+
+def safe_int(value: Any) -> int | None:
+    if value in (None, ""):
+        return None
+    try:
+        return max(0, int(value))
+    except (TypeError, ValueError):
+        return None
 
 
 def load_json(path: Path, default: Any) -> Any:
@@ -87,44 +104,6 @@ def collect_wikidocs(
         rows = payload.get("blog_pages")
         if not isinstance(rows, list) or not rows:
             break
-        if SCHEMA_DEBUG and page == 1 and rows:
-            print(
-                f"SCHEMA WikiDocs @{blog['slug']} list fields: "
-                f"{sorted(rows[0].keys())}",
-                flush=True,
-            )
-            try:
-                public_response = session.get(
-                    blog["blog_url"],
-                    params={"page": 1, "schema_debug": int(time.time())},
-                    timeout=TIMEOUT,
-                )
-                public_response.raise_for_status()
-                first_id = str(rows[0].get("id", ""))
-                card_match = re.search(
-                    rf'<a[^>]+href=["\']/blog/@{re.escape(blog["slug"])}/{re.escape(first_id)}/["\'][\s\S]*?</a>',
-                    public_response.text,
-                    flags=re.IGNORECASE,
-                )
-                if card_match:
-                    card_text = re.sub(r"<[^>]+>", " ", card_match.group(0))
-                    card_text = " ".join(html.unescape(card_text).split())
-                    print(
-                        f"SCHEMA WikiDocs @{blog['slug']} first public card text: "
-                        f"{card_text[:800]}",
-                        flush=True,
-                    )
-                else:
-                    print(
-                        f"SCHEMA WikiDocs @{blog['slug']} public card: not matched",
-                        flush=True,
-                    )
-            except requests.RequestException as exc:
-                print(
-                    f"SCHEMA WikiDocs @{blog['slug']} public page unavailable: "
-                    f"{type(exc).__name__}",
-                    flush=True,
-                )
         for item in rows:
             post_id = str(item.get("id", "")).strip()
             if not post_id:
@@ -151,6 +130,8 @@ def collect_wikidocs(
                     "title": title,
                     "post_url": f"https://wikidocs.net/blog/@{blog['slug']}/{post_id}/",
                     "published_at": published_at,
+                    "views_total": None,
+                    "views_checked_at": "",
                     "first_seen_at": collected_at,
                     "last_seen_at": collected_at,
                 }
@@ -191,10 +172,13 @@ def collect_tilnote(
         if str(page).isdigit() and 1 <= int(page) <= last_page
     }
     all_rows: list[dict[str, Any]] = []
-    missing_pages = [
-        page for page in range(1, last_page + 1) if page not in completed_pages
-    ]
-    pages_to_fetch = sorted(set(missing_pages + [1]))
+    history_complete = bool(previous_state.get("history_complete"))
+    missing_pages = [page for page in range(1, last_page + 1) if page not in completed_pages]
+    pages_to_fetch = (
+        list(range(1, last_page + 1))
+        if history_complete
+        else sorted(set(missing_pages + [1]))
+    )
 
     failed_pages: list[int] = []
     if pages_to_fetch:
@@ -229,8 +213,6 @@ def collect_tilnote(
         if not post_id:
             continue
         key = f"Tilnote:{blog['slug']}:{post_id}"
-        if key in known_ids:
-            continue
         result.append(
             {
                 "key": key,
@@ -245,6 +227,8 @@ def collect_tilnote(
                 ),
                 "post_url": f"https://tilnote.io/pages/{post_id}",
                 "published_at": normalise_date(item.get("createdAt")),
+                "views_total": safe_int(item.get("view")),
+                "views_checked_at": collected_at,
                 "first_seen_at": collected_at,
                 "last_seen_at": collected_at,
             }
@@ -257,9 +241,14 @@ def collect_tilnote(
         "remaining_pages": remaining,
         "history_complete": remaining == 0,
         "last_attempt_at": collected_at,
+        "last_full_refresh_at": (
+            collected_at
+            if history_complete and not failed_pages
+            else previous_state.get("last_full_refresh_at", "")
+        ),
     }
     print(
-        f"Tilnote @{blog['slug']}: {len(result)} new post(s), "
+        f"Tilnote @{blog['slug']}: {len(result)} refreshed post row(s), "
         f"history {len(completed_pages)}/{last_page} pages, "
         f"{len(failed_pages)} page attempt(s) deferred",
         flush=True,
@@ -267,12 +256,61 @@ def collect_tilnote(
     return result, state
 
 
+def finalise_post(
+    row: dict[str, Any],
+    previous: dict[str, Any] | None,
+    previous_stats_date: str,
+    today: str,
+    collected_at: str,
+) -> dict[str, Any]:
+    result = dict(row)
+    previous = previous or {}
+    result["first_seen_at"] = previous.get("first_seen_at") or result.get("first_seen_at") or collected_at
+    result["last_seen_at"] = result.get("last_seen_at") or previous.get("last_seen_at") or collected_at
+
+    published_date = kst_date(result.get("published_at"))
+    if published_date:
+        result["post_date"] = published_date
+        result["post_date_source"] = "published"
+    else:
+        result["post_date"] = kst_date(result.get("first_seen_at"))
+        result["post_date_source"] = "first_seen"
+
+    current_total = safe_int(result.get("views_total"))
+    previous_total = safe_int(previous.get("views_total"))
+    if current_total is None:
+        result["views_total"] = None
+        result["views_day_start"] = None
+        result["views_today"] = None
+        result["views_checked_at"] = ""
+        return result
+
+    result["views_total"] = current_total
+    if previous_stats_date == today:
+        baseline = safe_int(previous.get("views_day_start"))
+        if baseline is None:
+            baseline = 0 if result["post_date"] == today and not previous_total else current_total
+    else:
+        baseline = previous_total
+        if baseline is None:
+            baseline = 0 if result["post_date"] == today else current_total
+    if current_total < baseline:
+        baseline = current_total
+    result["views_day_start"] = baseline
+    result["views_today"] = current_total - baseline
+    result["views_checked_at"] = result.get("views_checked_at") or previous.get("views_checked_at") or ""
+    return result
+
+
 def main() -> int:
     blogs = load_json(CONFIG_PATH, [])
     existing_doc = load_json(JSON_PATH, {"posts": []})
     existing = list(existing_doc.get("posts", []))
+    existing_by_key = {row["key"]: row for row in existing if row.get("key")}
     known_ids = {row["key"] for row in existing if row.get("key")}
     collected_at = utc_now()
+    today = kst_date(collected_at)
+    previous_stats_date = str(existing_doc.get("stats_date") or "")
 
     try:
         secrets = json.loads(os.environ.get("WIKIDOCS_BLOGS_JSON", "{}"))
@@ -284,7 +322,7 @@ def main() -> int:
     if missing:
         raise RuntimeError("Missing WikiDocs token(s): " + ", ".join(missing))
 
-    new_posts: list[dict[str, Any]] = []
+    collected_rows: list[dict[str, Any]] = []
     errors: list[str] = []
     with ThreadPoolExecutor(max_workers=6) as pool:
         futures = {
@@ -296,7 +334,7 @@ def main() -> int:
         for future in as_completed(futures):
             blog = futures[future]
             try:
-                new_posts.extend(future.result())
+                collected_rows.extend(future.result())
             except Exception as exc:
                 errors.append(f"{blog['blog_name']}: {exc}")
 
@@ -306,7 +344,7 @@ def main() -> int:
         tilnote_posts, tilnote_state = collect_tilnote(
             tilnote, known_ids, collected_at, tilnote_state
         )
-        new_posts.extend(tilnote_posts)
+        collected_rows.extend(tilnote_posts)
     except Exception as exc:
         errors.append(f"{tilnote['blog_name']}: {exc}")
 
@@ -315,10 +353,20 @@ def main() -> int:
         for error in errors:
             print(f"- {error}", file=sys.stderr)
 
-    merged = {row["key"]: row for row in existing if row.get("key")}
-    for row in new_posts:
-        merged[row["key"]] = row
-    posts = list(merged.values())
+    merged = {key: dict(row) for key, row in existing_by_key.items()}
+    for row in collected_rows:
+        previous = existing_by_key.get(row["key"], {})
+        merged[row["key"]] = {**previous, **row}
+    posts = [
+        finalise_post(
+            row,
+            existing_by_key.get(key),
+            previous_stats_date,
+            today,
+            collected_at,
+        )
+        for key, row in merged.items()
+    ]
     posts.sort(
         key=lambda row: (
             row.get("published_at") or row.get("first_seen_at") or "",
@@ -335,11 +383,58 @@ def main() -> int:
         )
         for blog in blogs
     }
+    blog_stats: dict[str, dict[str, Any]] = {}
+    for blog in blogs:
+        key = f"{blog['platform']}:{blog['slug']}"
+        rows = [
+            row
+            for row in posts
+            if row["platform"] == blog["platform"] and row["slug"] == blog["slug"]
+        ]
+        supported = [row for row in rows if safe_int(row.get("views_total")) is not None]
+        blog_stats[key] = {
+            "platform": blog["platform"],
+            "slug": blog["slug"],
+            "blog_name": blog["blog_name"],
+            "posts_total": len(rows),
+            "posts_today": sum(1 for row in rows if row.get("post_date") == today),
+            "views_total": (
+                sum(int(row["views_total"]) for row in supported) if supported else None
+            ),
+            "views_today": (
+                sum(int(row.get("views_today") or 0) for row in supported)
+                if supported
+                else None
+            ),
+            "view_posts": len(supported),
+            "views_supported": len(supported) == len(rows) and bool(rows),
+            "views_checked_at": max(
+                (str(row.get("views_checked_at") or "") for row in supported),
+                default="",
+            ),
+        }
+    view_rows = [row for row in posts if safe_int(row.get("views_total")) is not None]
+    view_blog_count = sum(1 for stat in blog_stats.values() if stat["view_posts"] > 0)
     document = {
         "generated_at": collected_at,
+        "stats_date": today,
         "total_posts": len(posts),
         "blog_count": len(blogs),
         "counts": counts,
+        "blog_stats": blog_stats,
+        "views": {
+            "total": sum(int(row["views_total"]) for row in view_rows),
+            "today": sum(int(row.get("views_today") or 0) for row in view_rows),
+            "supported_posts": len(view_rows),
+            "total_posts": len(posts),
+            "supported_blogs": view_blog_count,
+            "total_blogs": len(blogs),
+            "checked_at": max(
+                (str(row.get("views_checked_at") or "") for row in view_rows),
+                default="",
+            ),
+            "note": "Tilnote API 제공 범위 합계. WikiDocs 공식 API는 조회수를 제공하지 않습니다.",
+        },
         "source_state": {"tilnote": tilnote_state},
         "collection_errors": errors,
         "posts": posts,
@@ -356,7 +451,12 @@ def main() -> int:
         "account_masked",
         "title",
         "post_url",
+        "post_date",
+        "post_date_source",
         "published_at",
+        "views_total",
+        "views_today",
+        "views_checked_at",
         "first_seen_at",
     ]
     with CSV_PATH.open("w", encoding="utf-8-sig", newline="") as handle:
@@ -365,7 +465,11 @@ def main() -> int:
         )
         writer.writeheader()
         writer.writerows(posts)
-    print(f"Saved {len(posts)} total post(s); {len(new_posts)} new.")
+    new_count = sum(1 for row in collected_rows if row["key"] not in existing_by_key)
+    print(
+        f"Saved {len(posts)} total post(s); {new_count} new; "
+        f"{len(view_rows)} row(s) with view metrics."
+    )
     return 0
 
 

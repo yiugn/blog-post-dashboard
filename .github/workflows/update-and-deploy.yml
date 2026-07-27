@@ -2,12 +2,6 @@ name: Update posts and deploy dashboard
 
 on:
   workflow_dispatch:
-    inputs:
-      schema_debug:
-        description: "Print public source field names for collector diagnostics"
-        required: false
-        type: boolean
-        default: false
   schedule:
     - cron: "17 * * * *"
 
@@ -36,10 +30,9 @@ jobs:
       - name: Install collector dependencies
         run: pip install -r requirements.txt
 
-      - name: Collect new posts and resume historical crawl
+      - name: Collect posts, publication dates, and view snapshots
         env:
           WIKIDOCS_BLOGS_JSON: ${{ secrets.WIKIDOCS_BLOGS_JSON }}
-          COLLECTOR_SCHEMA_DEBUG: ${{ inputs.schema_debug || 'false' }}
         run: python scripts/update_posts.py
 
       - name: Commit refreshed table
