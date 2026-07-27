@@ -163,21 +163,20 @@ def collect_tilnote(
     previous_state: dict[str, Any],
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     user_id = str(blog["source_id"])
-    last_page = int(
-        previous_state.get("total_pages") or blog.get("initial_last_page") or 1
-    )
+    _, first_rows, last_page = fetch_tilnote_page(user_id, 1)
     completed_pages = {
         int(page)
         for page in previous_state.get("completed_pages", [])
         if str(page).isdigit() and 1 <= int(page) <= last_page
     }
-    all_rows: list[dict[str, Any]] = []
+    completed_pages.add(1)
+    all_rows: list[dict[str, Any]] = list(first_rows)
     history_complete = bool(previous_state.get("history_complete"))
     missing_pages = [page for page in range(1, last_page + 1) if page not in completed_pages]
     pages_to_fetch = (
-        list(range(1, last_page + 1))
+        list(range(2, last_page + 1))
         if history_complete
-        else sorted(set(missing_pages + [1]))
+        else missing_pages
     )
 
     failed_pages: list[int] = []
@@ -193,7 +192,12 @@ def collect_tilnote(
                 source_page = futures[future]
                 try:
                     page, rows, observed_last_page = future.result()
-                    last_page = max(last_page, observed_last_page)
+                    if observed_last_page != last_page:
+                        print(
+                            f"Tilnote page count changed during collection: "
+                            f"{last_page} -> {observed_last_page}",
+                            flush=True,
+                        )
                     fetched[page] = rows
                     completed_pages.add(page)
                 except Exception:
