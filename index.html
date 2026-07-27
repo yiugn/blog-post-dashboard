@@ -1,11 +1,24 @@
 <!doctype html>
 <html lang="ko">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="15개 블로그의 전체 발행 글을 매시간 갱신하는 통합 대시보드" />
-    <title>블로그 포스트 통합 현황</title>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231d3b2a'/%3E%3Ccircle cx='43' cy='21' r='13' fill='%23c8f04b'/%3E%3Cpath d='M17 18h13v28H17z' fill='white'/%3E%3C/svg%3E" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="15개 블로그의 발행량과 조회 흐름을 매시간 갱신하는 콘텐츠 인텔리전스 대시보드"
+    />
+    <meta name="theme-color" content="#0b1220" />
+    <title>PostPulse · 블로그 포스트 통합 현황</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='17' fill='%230b1220'/%3E%3Crect x='12' y='12' width='40' height='40' rx='13' fill='%23b7f34a'/%3E%3Cpath d='M23 22h10c7 0 11 3.5 11 9s-4 9-11 9h-3v6h-7V22Zm7 6v6h3c2.6 0 4-1 4-3s-1.4-3-4-3h-3Z' fill='%230b1220'/%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
     <script>
       (function (c, l, a, r, i, t, y) {
         c[a] =
@@ -20,155 +33,18 @@
         y.parentNode.insertBefore(t, y);
       })(window, document, "clarity", "script", "xr96fziro7");
     </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="ambient ambient-one"></div>
-    <div class="ambient ambient-two"></div>
-    <main class="shell">
-      <header class="hero">
-        <div>
-          <p class="eyebrow"><span class="live-dot"></span> HOURLY LIVE INDEX</p>
-          <h1>블로그 포스트<br /><span>통합 현황</span></h1>
-          <p class="lede">WikiDocs와 Tilnote의 발행일, 당일 발행량, 누적·당일 조회수를 한곳에서 확인합니다.</p>
-        </div>
-        <div class="updated-card">
-          <span>마지막 데이터 갱신</span>
-          <strong id="updated-at">불러오는 중…</strong>
-          <small>매시 17분 원천 집계 · 화면은 5분마다 자동 확인</small>
-        </div>
-      </header>
-
-      <section class="metrics" aria-label="요약 지표">
-        <article class="metric accent">
-          <span>전체 포스트</span>
-          <strong id="total-posts">—</strong>
-          <small>수집된 공개 글</small>
-        </article>
-        <article class="metric">
-          <span>오늘 발행</span>
-          <strong id="today-posts">—</strong>
-          <small>한국 시간 기준</small>
-        </article>
-        <article class="metric">
-          <span>연결 블로그</span>
-          <strong id="blog-count">—</strong>
-          <small>WikiDocs 14 · Tilnote 1</small>
-        </article>
-        <article class="metric view-metric">
-          <span>총 누적 조회수</span>
-          <strong id="total-views">—</strong>
-          <small>조회수 제공 포스트 합계</small>
-        </article>
-        <article class="metric view-metric live">
-          <span><i class="live-dot"></i> 오늘 조회수</span>
-          <strong id="today-views">—</strong>
-          <small>당일 자정 스냅샷 대비</small>
-        </article>
-        <article class="metric">
-          <span>선택 결과</span>
-          <strong id="filtered-count">—</strong>
-          <small>현재 필터와 일치</small>
-        </article>
-      </section>
-
-      <section class="panel summary-panel">
-        <div class="section-heading">
-          <div>
-            <p class="kicker">BLOG DISTRIBUTION</p>
-            <h2>블로그별 발행 현황</h2>
-          </div>
-          <p>막대를 선택하면 해당 블로그 글만 표시됩니다.</p>
-        </div>
-        <div id="blog-summary" class="blog-summary" aria-live="polite"></div>
-      </section>
-
-      <section class="panel today-panel">
-        <div class="section-heading">
-          <div>
-            <p class="kicker">TODAY · KST</p>
-            <h2>당일 블로그 발행 현황</h2>
-          </div>
-          <strong id="today-summary-total" class="section-total">오늘 —개</strong>
-        </div>
-        <div id="today-summary" class="today-summary" aria-live="polite"></div>
-      </section>
-
-      <aside id="view-coverage" class="coverage-note" aria-live="polite">
-        조회수 집계 범위를 확인하는 중입니다.
-      </aside>
-
-      <section class="panel table-panel">
-        <div class="section-heading table-heading">
-          <div>
-            <p class="kicker">POST DIRECTORY</p>
-            <h2>전체 포스트</h2>
-          </div>
-          <a class="download" href="data/posts.csv" download>CSV 내려받기 <span>↓</span></a>
-        </div>
-
-        <div class="toolbar">
-          <label class="search">
-            <span aria-hidden="true">⌕</span>
-            <input id="search" type="search" placeholder="제목 또는 블로그명 검색" autocomplete="off" />
-          </label>
-          <select id="platform-filter" aria-label="플랫폼 선택">
-            <option value="">모든 플랫폼</option>
-            <option value="WikiDocs">WikiDocs</option>
-            <option value="Tilnote">Tilnote</option>
-          </select>
-          <select id="blog-filter" aria-label="블로그 선택">
-            <option value="">모든 블로그</option>
-          </select>
-          <select id="day-filter" aria-label="발행일 선택">
-            <option value="">전체 날짜</option>
-            <option value="today">오늘 발행만</option>
-          </select>
-          <select id="sort-order" aria-label="정렬 선택">
-            <option value="newest">최근 발행순</option>
-            <option value="oldest">오래된 발행순</option>
-            <option value="views">누적 조회수순</option>
-            <option value="today-views">오늘 조회수순</option>
-            <option value="title">제목순</option>
-          </select>
-        </div>
-
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>플랫폼</th>
-                <th>블로그</th>
-                <th>포스트 제목</th>
-                <th>포스트 날짜</th>
-                <th>누적 조회수</th>
-                <th>오늘 조회수</th>
-                <th>계정</th>
-                <th><span class="sr-only">열기</span></th>
-              </tr>
-            </thead>
-            <tbody id="post-body"></tbody>
-          </table>
-          <div id="empty-state" class="empty" hidden>조건과 일치하는 포스트가 없습니다.</div>
-        </div>
-
-        <footer class="pagination">
-          <span id="page-status">—</span>
-          <div>
-            <button id="prev-page" type="button">이전</button>
-            <button id="next-page" type="button">다음</button>
-          </div>
-        </footer>
-      </section>
-
-      <footer class="site-footer">
-        <span>개인정보 보호를 위해 계정은 마스킹하고 인증 토큰은 공개 데이터에 포함하지 않습니다.</span>
-        <a href="https://github.com/yiugn/blog-post-dashboard">GitHub 저장소 ↗</a>
-      </footer>
-    </main>
-    <script src="app.js" defer></script>
+    <div id="root"></div>
+    <script>
+      if (window.location.hash.includes("figmacapture=")) {
+        const captureScript = document.createElement("script");
+        captureScript.src =
+          "https://mcp.figma.com/mcp/html-to-design/capture.js";
+        captureScript.async = true;
+        document.head.appendChild(captureScript);
+      }
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

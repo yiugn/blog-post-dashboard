@@ -9,3 +9,8 @@ dashboard-preview.png
 *.log
 *.pid
 tilnote-last-page.json
+node_modules/
+dist/
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
