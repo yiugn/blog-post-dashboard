@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-07-28T14:41:51Z",
-  "stats_date": "2026-07-28",
-  "total_posts": 17596,
+  "generated_at": "2026-07-28T16:51:14Z",
+  "stats_date": "2026-07-29",
+  "total_posts": 17616,
   "blog_count": 15,
   "counts": {
     "WikiDocs:aitechnote": 150,
@@ -18,7 +18,7 @@
     "WikiDocs:techinsight": 49,
     "WikiDocs:lifesolution": 50,
     "WikiDocs:solobizstack": 79,
-    "Tilnote:knarchive": 14209
+    "Tilnote:knarchive": 14229
   },
   "blog_stats": {
     "WikiDocs:aitechnote": {
@@ -146,7 +146,7 @@
       "slug": "newssignal",
       "blog_name": "뉴스 시그널",
       "posts_total": 50,
-      "posts_today": 10,
+      "posts_today": 0,
       "views_total": null,
       "views_today": null,
       "view_posts": 0,
@@ -158,7 +158,7 @@
       "slug": "techinsight",
       "blog_name": "테크 인사이트",
       "posts_total": 49,
-      "posts_today": 10,
+      "posts_today": 0,
       "views_total": null,
       "views_today": null,
       "view_posts": 0,
@@ -170,7 +170,7 @@
       "slug": "lifesolution",
       "blog_name": "라이프 솔루션",
       "posts_total": 50,
-      "posts_today": 10,
+      "posts_today": 0,
       "views_total": null,
       "views_today": null,
       "view_posts": 0,
@@ -182,7 +182,7 @@
       "slug": "solobizstack",
       "blog_name": "SoloBiz Stack",
       "posts_total": 79,
-      "posts_today": 10,
+      "posts_today": 0,
       "views_total": null,
       "views_today": null,
       "view_posts": 0,
@@ -193,28 +193,28 @@
       "platform": "Tilnote",
       "slug": "knarchive",
       "blog_name": "knarchive",
-      "posts_total": 14209,
-      "posts_today": 26,
-      "views_total": 115,
-      "views_today": 72,
-      "view_posts": 46,
+      "posts_total": 14229,
+      "posts_today": 20,
+      "views_total": 144,
+      "views_today": 29,
+      "view_posts": 66,
       "views_supported": false,
-      "views_checked_at": "2026-07-28T14:41:51Z"
+      "views_checked_at": "2026-07-28T16:51:14Z"
     }
   },
   "views": {
-    "total": 115,
-    "today": 72,
-    "supported_posts": 46,
-    "total_posts": 17596,
+    "total": 144,
+    "today": 29,
+    "supported_posts": 66,
+    "total_posts": 17616,
     "supported_blogs": 1,
     "total_blogs": 15,
-    "checked_at": "2026-07-28T14:41:51Z",
+    "checked_at": "2026-07-28T16:51:14Z",
     "note": "Tilnote API 제공 범위 합계. WikiDocs 공식 API는 조회수를 제공하지 않습니다."
   },
   "source_state": {
     "tilnote": {
-      "total_pages": 717,
+      "total_pages": 720,
       "completed_pages": [
         1,
         2,
@@ -926,14 +926,414 @@
         708
       ],
       "completed_count": 708,
-      "remaining_pages": 9,
+      "remaining_pages": 12,
       "history_complete": false,
-      "last_attempt_at": "2026-07-28T14:41:51Z",
+      "last_attempt_at": "2026-07-28T16:51:14Z",
       "last_full_refresh_at": ""
     }
   },
   "collection_errors": [],
   "posts": [
+    {
+      "key": "Tilnote:knarchive:6a68d75fca45b7df56e08a1b",
+      "platform": "Tilnote",
+      "slug": "knarchive",
+      "blog_name": "knarchive",
+      "blog_url": "https://tilnote.io/@knarchive",
+      "account_masked": "",
+      "post_id": "6a68d75fca45b7df56e08a1b",
+      "title": "도커 도입, 개발팀이 배포 시간 줄이는 컨테이너 구성 기준",
+      "post_url": "https://tilnote.io/pages/6a68d75fca45b7df56e08a1b",
+      "published_at": "2026-07-28T16:22:55.211Z",
+      "views_total": 2,
+      "views_checked_at": "2026-07-28T16:51:14Z",
+      "first_seen_at": "2026-07-28T16:51:14Z",
+      "last_seen_at": "2026-07-28T16:51:14Z",
+      "post_date": "2026-07-29",
+      "post_date_source": "published",
+      "views_day_start": 0,
+      "views_today": 2
+    },
+    {
+      "key": "Tilnote:knarchive:6a68d748ca45b7df56e08950",
+      "platform": "Tilnote",
+      "slug": "knarchive",
+      "blog_name": "knarchive",
+      "blog_url": "https://tilnote.io/@knarchive",
+      "account_masked": "",
+      "post_id": "6a68d748ca45b7df56e08950",
+      "title": "쿠버네티스 Pod 리소스 설정, 개발팀이 서버 비용 줄이는 requests·limits 기준",
+      "post_url": "https://tilnote.io/pages/6a68d748ca45b7df56e08950",
+      "published_at": "2026-07-28T16:22:32.877Z",
+      "views_total": 2,
+      "views_checked_at": "2026-07-28T16:51:14Z",
+      "first_seen_at": "2026-07-28T16:51:14Z",
+      "last_seen_at": "2026-07-28T16:51:14Z",
+      "post_date": "2026-07-29",
+      "post_date_source": "published",
+      "views_day_start": 0,
+      "views_today": 2
+    },
+    {
+      "key": "Tilnote:knarchive:6a68d732ca45b7df56e088a3",
+      "platform": "Tilnote",
+      "slug": "knarchive",
+      "blog_name": "knarchive",
+      "blog_url": "https://tilnote.io/@knarchive",
+      "account_masked": "",
+      "post_id": "6a68d732ca45b7df56e088a3",
+      "title": "지라 협업 툴, PM이 일정 지연 위험을 조기에 확인하는 대시보드 설정법",
+      "post_url": "https://tilnote.io/pages/6a68d732ca45b7df56e088a3",
+      "published_at": "2026-07-28T16:22:10.462Z",
+      "views_total": 2,
+      "views_checked_at": "2026-07-28T16:51:14Z",
+      "first_seen_at": "2026-07-28T16:51:14Z",
+      "last_seen_at": "2026-07-28T16:51:14Z",
+      "post_date": "2026-07-29",
+      "post_date_source": "published",
+      "views_day_start": 0,
+      "views_today": 2
+    },
+    {
+      "key": "Tilnote:knarchive:6a68d71cca45b7df56e087bd",
+      "platform": "Tilnote",
+      "slug": "knarchive",
+      "blog_name": "knarchive",
+      "blog_url": "https://tilnote.io/@knarchive",
+      "account_masked": "",
+      "post_id": "6a68d71cca45b7df56e087bd",
+      "title": "오라클 무료 서버, 개인 개발자가 과금 없이 쓰는 무료 한도와 제한 조건",
+      "post_url": "https://tilnote.io/pages/6a68d71cca45b7df56e087bd",
+      "published_at": "2026-07-28T16:21:48.261Z",
+      "views_total": 1,
+      "views_checked_at": "2026-07-28T16:51:14Z",
+      "first_seen_at": "2026-07-28T16:51:14Z",
+      "last_seen_at": "2026-07-28T16:51:14Z",
+      "post_date": "2026-07-29",
+      "post_date_source": "published",
+      "views_day_start": 0,
+      "views_today": 1
+    },
+    {
+      "key": "Tilnote:knarchive:6a68d706ca45b7df56e0871c",
+      "platform": "Tilnote",
+      "slug": "knarchive",
+      "blog_name": "knarchive",
+      "blog_url": "https://tilnote.io/@knarchive",
+      "account_masked": "",
+      "post_id": "6a68d706ca45b7df56e0871c",
+      "title": "로그 데이터 분석, 보안팀이 이상 징후 10분 안에 탐지하는 알림 설정 기준",
+      "post_url": "https://tilnote.io/pages/6a68d706ca45b7df56e0871c",
+      "published_at": "2026-07-28T16:21:26.016Z",
+      "views_total": 1,
+      "views_checked_at": "2026-07-28T16:51:14Z",
+      "first_seen_at": "2026-07-28T16:51:14Z",
+      "last_seen_at": "2026-07-28T16:51:14Z",
+      "post_date": "2026-07-29",
+      "post_date_source": "published",
+      "views_day_start": 0,
+      "views_today": 1
+    },
+    {
+      "key": "Tilnote:knarchive:6a68d6efca45b7df56e085f3",
+      "platform": "Tilnote",
+      "slug": "knarchive",
+      "blog_name": "knarchive",
+      "blog_url": "https://tilnote.io/@knarchive",
+      "account_masked": "",
+      "post_id": "6a68d6efca45b7df56e085f3",
+      "title": "업무 히스토리 관리 엑셀, 인수인계 시 누락 없는 파일 정리 노하우 6단계",
+      "post_url": "https://tilnote.io/pages/6a68d6efca45b7df56e085f3",
+      "published_at": "2026-07-28T16:21:03.443Z",
+      "views_total": 2,
+      "views_checked_at": "2026-07-28T16:51:14Z",
+      "first_seen_at": "2026-07-28T16:51:14Z",
+      "last_seen_at": "2026-07-28T16:51:14Z",
+      "post_date": "2026-07-29",
+      "post_date_source": "published",
+      "views_day_start": 0,
+      "views_today": 2
+    },
+    {
+      "key": "Tilnote:knarchive:6a68d6d9ca45b7df56e0851d",
+      "platform": "Tilnote",
+      "slug": "knarchive",
+      "blog_name": "knarchive",
+      "blog_url": "https://tilnote.io/@knarchive",
+      "account_masked": "",
+      "post_id": "6a68d6d9ca45b7df56e0851d",
+      "title": "무료 DB, 학생 개발자가 프로젝트에 쓸 오픈소스 데이터베이스 3가지",
+      "post_url": "https://tilnote.io/pages/6a68d6d9ca45b7df56e0851d",
+      "published_at": "2026-07-28T16:20:41.035Z",
+      "views_total": 1,
+      "views_checked_at": "2026-07-28T16:51:14Z",
+      "first_seen_at": "2026-07-28T16:51:14Z",
+      "last_seen_at": "2026-07-28T16:51:14Z",
+      "post_date": "2026-07-29",
+      "post_date_source": "published",
+      "views_day_start": 0,
+      "views_today": 1
+    },
+    {
+      "key": "Tilnote:knarchive:6a68d6c2ca45b7df56e0846c",
+      "platform": "Tilnote",
+      "slug": "knarchive",
+      "blog_name": "knarchive",
+      "blog_url": "https://tilnote.io/@knarchive",
+      "account_masked": "",
+      "post_id": "6a68d6c2ca45b7df56e0846c",
+      "title": "마이크로소프트 다이내믹스, 중견기업 ERP 도입 전 체크할 5가지 핵심 기능",
+      "post_url": "https://tilnote.io/pages/6a68d6c2ca45b7df56e0846c",
+      "published_at": "2026-07-28T16:20:18.736Z",
+      "views_total": 2,
+      "views_checked_at": "2026-07-28T16:51:14Z",
+      "first_seen_at": "2026-07-28T16:51:14Z",
+      "last_seen_at": "2026-07-28T16:51:14Z",
+      "post_date": "2026-07-29",
+      "post_date_source": "published",
+      "views_day_start": 0,
+      "views_today": 2
+    },
+    {
+      "key": "Tilnote:knarchive:6a68d6acca45b7df56e083bd",
+      "platform": "Tilnote",
+      "slug": "knarchive",
+      "blog_name": "knarchive",
+      "blog_url": "https://tilnote.io/@knarchive",
+      "account_masked": "",
+      "post_id": "6a68d6acca45b7df56e083bd",
+      "title": "창고 로케이션 관리, 중소형 물류창고가 재고 파악 시간 30% 줄이는 법 7가지",
+      "post_url": "https://tilnote.io/pages/6a68d6acca45b7df56e083bd",
+      "published_at": "2026-07-28T16:19:56.814Z",
+      "views_total": 1,
+      "views_checked_at": "2026-07-28T16:51:14Z",
+      "first_seen_at": "2026-07-28T16:51:14Z",
+      "last_seen_at": "2026-07-28T16:51:14Z",
+      "post_date": "2026-07-29",
+      "post_date_source": "published",
+      "views_day_start": 0,
+      "views_today": 1
+    },
+    {
+      "key": "Tilnote:knarchive:6a68d696ca45b7df56e082ab",
+      "platform": "Tilnote",
+      "slug": "knarchive",
+      "blog_name": "knarchive",
+      "blog_url": "https://tilnote.io/@knarchive",
+      "account_masked": "",
+      "post_id": "6a68d696ca45b7df56e082ab",
+      "title": "협업 툴 지라, 애자일 개발팀이 스프린트 효율 20% 높이는 활용 전략 6가지",
+      "post_url": "https://tilnote.io/pages/6a68d696ca45b7df56e082ab",
+      "published_at": "2026-07-28T16:19:34.741Z",
+      "views_total": 1,
+      "views_checked_at": "2026-07-28T16:51:14Z",
+      "first_seen_at": "2026-07-28T16:51:14Z",
+      "last_seen_at": "2026-07-28T16:51:14Z",
+      "post_date": "2026-07-29",
+      "post_date_source": "published",
+      "views_day_start": 0,
+      "views_today": 1
+    },
+    {
+      "key": "Tilnote:knarchive:6a68d680ca45b7df56e081e1",
+      "platform": "Tilnote",
+      "slug": "knarchive",
+      "blog_name": "knarchive",
+      "blog_url": "https://tilnote.io/@knarchive",
+      "account_masked": "",
+      "post_id": "6a68d680ca45b7df56e081e1",
+      "title": "팀즈 프로젝트 관리, 비개발팀이 회의록과 업무 요청 한 번에 정리하는 법 5단계",
+      "post_url": "https://tilnote.io/pages/6a68d680ca45b7df56e081e1",
+      "published_at": "2026-07-28T16:19:12.719Z",
+      "views_total": 1,
+      "views_checked_at": "2026-07-28T16:51:14Z",
+      "first_seen_at": "2026-07-28T16:51:14Z",
+      "last_seen_at": "2026-07-28T16:51:14Z",
+      "post_date": "2026-07-29",
+      "post_date_source": "published",
+      "views_day_start": 0,
+      "views_today": 1
+    },
+    {
+      "key": "Tilnote:knarchive:6a68d66aca45b7df56e080ad",
+      "platform": "Tilnote",
+      "slug": "knarchive",
+      "blog_name": "knarchive",
+      "blog_url": "https://tilnote.io/@knarchive",
+      "account_masked": "",
+      "post_id": "6a68d66aca45b7df56e080ad",
+      "title": "반응형 홈페이지 제작 업체, 모바일 퍼스트 시대에 클릭률 높이는 기준 5가지",
+      "post_url": "https://tilnote.io/pages/6a68d66aca45b7df56e080ad",
+      "published_at": "2026-07-28T16:18:50.090Z",
+      "views_total": 1,
+      "views_checked_at": "2026-07-28T16:51:14Z",
+      "first_seen_at": "2026-07-28T16:51:14Z",
+      "last_seen_at": "2026-07-28T16:51:14Z",
+      "post_date": "2026-07-29",
+      "post_date_source": "published",
+      "views_day_start": 0,
+      "views_today": 1
+    },
+    {
+      "key": "Tilnote:knarchive:6a68d654ca45b7df56e07ffc",
+      "platform": "Tilnote",
+      "slug": "knarchive",
+      "blog_name": "knarchive",
+      "blog_url": "https://tilnote.io/@knarchive",
+      "account_masked": "",
+      "post_id": "6a68d654ca45b7df56e07ffc",
+      "title": "엔비디아 클라우드, AI 개발팀이 고성능 GPU 비용 줄이는 활용법 5가지",
+      "post_url": "https://tilnote.io/pages/6a68d654ca45b7df56e07ffc",
+      "published_at": "2026-07-28T16:18:28.259Z",
+      "views_total": 1,
+      "views_checked_at": "2026-07-28T16:51:14Z",
+      "first_seen_at": "2026-07-28T16:51:14Z",
+      "last_seen_at": "2026-07-28T16:51:14Z",
+      "post_date": "2026-07-29",
+      "post_date_source": "published",
+      "views_day_start": 0,
+      "views_today": 1
+    },
+    {
+      "key": "Tilnote:knarchive:6a68d63dca45b7df56e07f2a",
+      "platform": "Tilnote",
+      "slug": "knarchive",
+      "blog_name": "knarchive",
+      "blog_url": "https://tilnote.io/@knarchive",
+      "account_masked": "",
+      "post_id": "6a68d63dca45b7df56e07f2a",
+      "title": "캐글 데이터 분석, 비전공자가 실제 기업 데이터 문제 해결하는 입문 가이드 8가지",
+      "post_url": "https://tilnote.io/pages/6a68d63dca45b7df56e07f2a",
+      "published_at": "2026-07-28T16:18:05.994Z",
+      "views_total": 1,
+      "views_checked_at": "2026-07-28T16:51:14Z",
+      "first_seen_at": "2026-07-28T16:51:14Z",
+      "last_seen_at": "2026-07-28T16:51:14Z",
+      "post_date": "2026-07-29",
+      "post_date_source": "published",
+      "views_day_start": 0,
+      "views_today": 1
+    },
+    {
+      "key": "Tilnote:knarchive:6a68d627ca45b7df56e07e41",
+      "platform": "Tilnote",
+      "slug": "knarchive",
+      "blog_name": "knarchive",
+      "blog_url": "https://tilnote.io/@knarchive",
+      "account_masked": "",
+      "post_id": "6a68d627ca45b7df56e07e41",
+      "title": "워드프레스 제작 업체, 포트폴리오 100개 이상 업체 고르는 노하우 6가지",
+      "post_url": "https://tilnote.io/pages/6a68d627ca45b7df56e07e41",
+      "published_at": "2026-07-28T16:17:43.747Z",
+      "views_total": 2,
+      "views_checked_at": "2026-07-28T16:51:14Z",
+      "first_seen_at": "2026-07-28T16:51:14Z",
+      "last_seen_at": "2026-07-28T16:51:14Z",
+      "post_date": "2026-07-29",
+      "post_date_source": "published",
+      "views_day_start": 0,
+      "views_today": 2
+    },
+    {
+      "key": "Tilnote:knarchive:6a68d611ca45b7df56e07d34",
+      "platform": "Tilnote",
+      "slug": "knarchive",
+      "blog_name": "knarchive",
+      "blog_url": "https://tilnote.io/@knarchive",
+      "account_masked": "",
+      "post_id": "6a68d611ca45b7df56e07d34",
+      "title": "컨플루언스 프로젝트 관리, 대규모 문서 협업 시 정보 누락 줄이는 팁 4가지",
+      "post_url": "https://tilnote.io/pages/6a68d611ca45b7df56e07d34",
+      "published_at": "2026-07-28T16:17:21.166Z",
+      "views_total": 1,
+      "views_checked_at": "2026-07-28T16:51:14Z",
+      "first_seen_at": "2026-07-28T16:51:14Z",
+      "last_seen_at": "2026-07-28T16:51:14Z",
+      "post_date": "2026-07-29",
+      "post_date_source": "published",
+      "views_day_start": 0,
+      "views_today": 1
+    },
+    {
+      "key": "Tilnote:knarchive:6a68d5faca45b7df56e07c4c",
+      "platform": "Tilnote",
+      "slug": "knarchive",
+      "blog_name": "knarchive",
+      "blog_url": "https://tilnote.io/@knarchive",
+      "account_masked": "",
+      "post_id": "6a68d5faca45b7df56e07c4c",
+      "title": "시프티 외근, 50인 미만 중소기업이 모바일 근태관리 자동화할 때 볼 기능 6개",
+      "post_url": "https://tilnote.io/pages/6a68d5faca45b7df56e07c4c",
+      "published_at": "2026-07-28T16:16:58.855Z",
+      "views_total": 2,
+      "views_checked_at": "2026-07-28T16:51:14Z",
+      "first_seen_at": "2026-07-28T16:51:14Z",
+      "last_seen_at": "2026-07-28T16:51:14Z",
+      "post_date": "2026-07-29",
+      "post_date_source": "published",
+      "views_day_start": 0,
+      "views_today": 2
+    },
+    {
+      "key": "Tilnote:knarchive:6a68d5e4ca45b7df56e07b50",
+      "platform": "Tilnote",
+      "slug": "knarchive",
+      "blog_name": "knarchive",
+      "blog_url": "https://tilnote.io/@knarchive",
+      "account_masked": "",
+      "post_id": "6a68d5e4ca45b7df56e07b50",
+      "title": "지라 프로젝트 관리, 개발팀의 버그 트래킹과 이슈 해결 속도 높이는 5가지",
+      "post_url": "https://tilnote.io/pages/6a68d5e4ca45b7df56e07b50",
+      "published_at": "2026-07-28T16:16:36.820Z",
+      "views_total": 2,
+      "views_checked_at": "2026-07-28T16:51:14Z",
+      "first_seen_at": "2026-07-28T16:51:14Z",
+      "last_seen_at": "2026-07-28T16:51:14Z",
+      "post_date": "2026-07-29",
+      "post_date_source": "published",
+      "views_day_start": 0,
+      "views_today": 2
+    },
+    {
+      "key": "Tilnote:knarchive:6a68d5cdca45b7df56e07a0b",
+      "platform": "Tilnote",
+      "slug": "knarchive",
+      "blog_name": "knarchive",
+      "blog_url": "https://tilnote.io/@knarchive",
+      "account_masked": "",
+      "post_id": "6a68d5cdca45b7df56e07a0b",
+      "title": "프로젝트 관리 툴, 마감일 잦은 팀이 일정 혼란 줄이는 선택 기준 8가지",
+      "post_url": "https://tilnote.io/pages/6a68d5cdca45b7df56e07a0b",
+      "published_at": "2026-07-28T16:16:13.557Z",
+      "views_total": 1,
+      "views_checked_at": "2026-07-28T16:51:14Z",
+      "first_seen_at": "2026-07-28T16:51:14Z",
+      "last_seen_at": "2026-07-28T16:51:14Z",
+      "post_date": "2026-07-29",
+      "post_date_source": "published",
+      "views_day_start": 0,
+      "views_today": 1
+    },
+    {
+      "key": "Tilnote:knarchive:6a68d5b6ca45b7df56e078b0",
+      "platform": "Tilnote",
+      "slug": "knarchive",
+      "blog_name": "knarchive",
+      "blog_url": "https://tilnote.io/@knarchive",
+      "account_masked": "",
+      "post_id": "6a68d5b6ca45b7df56e078b0",
+      "title": "업무 관리 어플, 잦은 외근 직장인이 모바일로 보고서 정리할 때 추천 6가지",
+      "post_url": "https://tilnote.io/pages/6a68d5b6ca45b7df56e078b0",
+      "published_at": "2026-07-28T16:15:50.994Z",
+      "views_total": 2,
+      "views_checked_at": "2026-07-28T16:51:14Z",
+      "first_seen_at": "2026-07-28T16:51:14Z",
+      "last_seen_at": "2026-07-28T16:51:14Z",
+      "post_date": "2026-07-29",
+      "post_date_source": "published",
+      "views_day_start": 0,
+      "views_today": 2
+    },
     {
       "key": "Tilnote:knarchive:6a68ba06ca45b7df56dfab6a",
       "platform": "Tilnote",
@@ -951,8 +1351,8 @@
       "last_seen_at": "2026-07-28T14:41:51Z",
       "post_date": "2026-07-28",
       "post_date_source": "published",
-      "views_day_start": 0,
-      "views_today": 2
+      "views_day_start": 2,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a68b9f3ca45b7df56dfaa83",
@@ -971,8 +1371,8 @@
       "last_seen_at": "2026-07-28T14:41:51Z",
       "post_date": "2026-07-28",
       "post_date_source": "published",
-      "views_day_start": 0,
-      "views_today": 1
+      "views_day_start": 1,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a68b9daca45b7df56dfa935",
@@ -991,8 +1391,8 @@
       "last_seen_at": "2026-07-28T14:41:51Z",
       "post_date": "2026-07-28",
       "post_date_source": "published",
-      "views_day_start": 0,
-      "views_today": 2
+      "views_day_start": 2,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a68b9c0ca45b7df56dfa838",
@@ -1011,8 +1411,8 @@
       "last_seen_at": "2026-07-28T14:41:51Z",
       "post_date": "2026-07-28",
       "post_date_source": "published",
-      "views_day_start": 0,
-      "views_today": 2
+      "views_day_start": 2,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a68b8cfca45b7df56dfa0c8",
@@ -1031,8 +1431,8 @@
       "last_seen_at": "2026-07-28T14:41:51Z",
       "post_date": "2026-07-28",
       "post_date_source": "published",
-      "views_day_start": 0,
-      "views_today": 1
+      "views_day_start": 1,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a68b862ca45b7df56df9d38",
@@ -1051,8 +1451,8 @@
       "last_seen_at": "2026-07-28T14:41:51Z",
       "post_date": "2026-07-28",
       "post_date_source": "published",
-      "views_day_start": 0,
-      "views_today": 1
+      "views_day_start": 1,
+      "views_today": 0
     },
     {
       "key": "WikiDocs:solobizstack:26699",
@@ -1471,8 +1871,8 @@
       "last_seen_at": "2026-07-28T14:41:51Z",
       "post_date": "2026-07-28",
       "post_date_source": "published",
-      "views_day_start": 0,
-      "views_today": 2
+      "views_day_start": 2,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a67e3abca45b7df56d82f23",
@@ -1491,8 +1891,8 @@
       "last_seen_at": "2026-07-28T14:41:51Z",
       "post_date": "2026-07-28",
       "post_date_source": "published",
-      "views_day_start": 0,
-      "views_today": 1
+      "views_day_start": 1,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a67e395ca45b7df56d82de5",
@@ -1511,8 +1911,8 @@
       "last_seen_at": "2026-07-28T14:41:51Z",
       "post_date": "2026-07-28",
       "post_date_source": "published",
-      "views_day_start": 0,
-      "views_today": 2
+      "views_day_start": 2,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a67e37fca45b7df56d82d19",
@@ -1531,8 +1931,8 @@
       "last_seen_at": "2026-07-28T14:41:51Z",
       "post_date": "2026-07-28",
       "post_date_source": "published",
-      "views_day_start": 0,
-      "views_today": 2
+      "views_day_start": 2,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a67e36aca45b7df56d82c2d",
@@ -1551,8 +1951,8 @@
       "last_seen_at": "2026-07-28T14:41:51Z",
       "post_date": "2026-07-28",
       "post_date_source": "published",
-      "views_day_start": 0,
-      "views_today": 2
+      "views_day_start": 2,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a67e354ca45b7df56d82b10",
@@ -1571,8 +1971,8 @@
       "last_seen_at": "2026-07-28T14:41:51Z",
       "post_date": "2026-07-28",
       "post_date_source": "published",
-      "views_day_start": 0,
-      "views_today": 2
+      "views_day_start": 2,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a67e33eca45b7df56d829cf",
@@ -1591,8 +1991,8 @@
       "last_seen_at": "2026-07-28T14:41:51Z",
       "post_date": "2026-07-28",
       "post_date_source": "published",
-      "views_day_start": 0,
-      "views_today": 1
+      "views_day_start": 1,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a67e327ca45b7df56d828d0",
@@ -1611,8 +2011,8 @@
       "last_seen_at": "2026-07-28T14:41:51Z",
       "post_date": "2026-07-28",
       "post_date_source": "published",
-      "views_day_start": 0,
-      "views_today": 1
+      "views_day_start": 1,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a67e312ca45b7df56d82799",
@@ -1631,8 +2031,8 @@
       "last_seen_at": "2026-07-28T14:41:51Z",
       "post_date": "2026-07-28",
       "post_date_source": "published",
-      "views_day_start": 0,
-      "views_today": 3
+      "views_day_start": 3,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a67e2fcca45b7df56d82660",
@@ -1651,8 +2051,8 @@
       "last_seen_at": "2026-07-28T14:41:51Z",
       "post_date": "2026-07-28",
       "post_date_source": "published",
-      "views_day_start": 0,
-      "views_today": 2
+      "views_day_start": 2,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a67e2e6ca45b7df56d825a3",
@@ -1671,8 +2071,8 @@
       "last_seen_at": "2026-07-28T14:41:51Z",
       "post_date": "2026-07-28",
       "post_date_source": "published",
-      "views_day_start": 0,
-      "views_today": 2
+      "views_day_start": 2,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a67e2d0ca45b7df56d824b9",
@@ -1691,8 +2091,8 @@
       "last_seen_at": "2026-07-28T14:41:51Z",
       "post_date": "2026-07-28",
       "post_date_source": "published",
-      "views_day_start": 0,
-      "views_today": 1
+      "views_day_start": 1,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a67e2b9ca45b7df56d823c9",
@@ -1711,8 +2111,8 @@
       "last_seen_at": "2026-07-28T14:41:51Z",
       "post_date": "2026-07-28",
       "post_date_source": "published",
-      "views_day_start": 0,
-      "views_today": 2
+      "views_day_start": 2,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a67e2a3ca45b7df56d822be",
@@ -1731,8 +2131,8 @@
       "last_seen_at": "2026-07-28T14:41:51Z",
       "post_date": "2026-07-28",
       "post_date_source": "published",
-      "views_day_start": 0,
-      "views_today": 1
+      "views_day_start": 1,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a67e28dca45b7df56d821b1",
@@ -1751,8 +2151,8 @@
       "last_seen_at": "2026-07-28T12:14:53Z",
       "post_date": "2026-07-28",
       "post_date_source": "published",
-      "views_day_start": 0,
-      "views_today": 1
+      "views_day_start": 1,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a67e278ca45b7df56d8210a",
@@ -1771,8 +2171,8 @@
       "last_seen_at": "2026-07-28T12:14:53Z",
       "post_date": "2026-07-28",
       "post_date_source": "published",
-      "views_day_start": 0,
-      "views_today": 2
+      "views_day_start": 2,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a67e262ca45b7df56d82024",
@@ -1791,8 +2191,8 @@
       "last_seen_at": "2026-07-28T12:14:53Z",
       "post_date": "2026-07-28",
       "post_date_source": "published",
-      "views_day_start": 0,
-      "views_today": 2
+      "views_day_start": 2,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a67e24cca45b7df56d81f60",
@@ -1811,8 +2211,8 @@
       "last_seen_at": "2026-07-28T12:14:53Z",
       "post_date": "2026-07-28",
       "post_date_source": "published",
-      "views_day_start": 0,
-      "views_today": 2
+      "views_day_start": 2,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a67e236ca45b7df56d81e74",
@@ -1831,8 +2231,8 @@
       "last_seen_at": "2026-07-28T12:14:53Z",
       "post_date": "2026-07-28",
       "post_date_source": "published",
-      "views_day_start": 0,
-      "views_today": 1
+      "views_day_start": 1,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a67e221ca45b7df56d81d9e",
@@ -1851,8 +2251,8 @@
       "last_seen_at": "2026-07-28T12:14:53Z",
       "post_date": "2026-07-28",
       "post_date_source": "published",
-      "views_day_start": 0,
-      "views_today": 2
+      "views_day_start": 2,
+      "views_today": 0
     },
     {
       "key": "WikiDocs:techinsight:26671",
@@ -3051,8 +3451,8 @@
       "views_checked_at": "2026-07-27T22:18:53Z",
       "post_date": "2026-07-27",
       "post_date_source": "published",
-      "views_day_start": 1,
-      "views_today": 2
+      "views_day_start": 3,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a669af6ca45b7df56ce6a6b",
@@ -3071,8 +3471,8 @@
       "views_checked_at": "2026-07-27T22:18:53Z",
       "post_date": "2026-07-27",
       "post_date_source": "published",
-      "views_day_start": 5,
-      "views_today": 4
+      "views_day_start": 9,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a669aeaca45b7df56ce6978",
@@ -3091,8 +3491,8 @@
       "views_checked_at": "2026-07-27T22:18:53Z",
       "post_date": "2026-07-27",
       "post_date_source": "published",
-      "views_day_start": 2,
-      "views_today": 1
+      "views_day_start": 3,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a669adfca45b7df56ce68b3",
@@ -3111,8 +3511,8 @@
       "views_checked_at": "2026-07-27T22:18:53Z",
       "post_date": "2026-07-27",
       "post_date_source": "published",
-      "views_day_start": 1,
-      "views_today": 1
+      "views_day_start": 2,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a669ad3ca45b7df56ce67c3",
@@ -3131,8 +3531,8 @@
       "views_checked_at": "2026-07-27T22:18:53Z",
       "post_date": "2026-07-27",
       "post_date_source": "published",
-      "views_day_start": 2,
-      "views_today": 1
+      "views_day_start": 3,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a669ac7ca45b7df56ce6719",
@@ -3151,8 +3551,8 @@
       "views_checked_at": "2026-07-27T22:18:53Z",
       "post_date": "2026-07-27",
       "post_date_source": "published",
-      "views_day_start": 4,
-      "views_today": 2
+      "views_day_start": 6,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a669abcca45b7df56ce6680",
@@ -3171,8 +3571,8 @@
       "views_checked_at": "2026-07-27T22:18:53Z",
       "post_date": "2026-07-27",
       "post_date_source": "published",
-      "views_day_start": 1,
-      "views_today": 1
+      "views_day_start": 2,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a669ab1ca45b7df56ce65d3",
@@ -3191,8 +3591,8 @@
       "views_checked_at": "2026-07-27T22:18:53Z",
       "post_date": "2026-07-27",
       "post_date_source": "published",
-      "views_day_start": 1,
-      "views_today": 1
+      "views_day_start": 2,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a669aa6ca45b7df56ce654d",
@@ -3211,8 +3611,8 @@
       "views_checked_at": "2026-07-27T22:18:53Z",
       "post_date": "2026-07-27",
       "post_date_source": "published",
-      "views_day_start": 1,
-      "views_today": 1
+      "views_day_start": 2,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a669a93ca45b7df56ce6467",
@@ -3231,8 +3631,8 @@
       "views_checked_at": "2026-07-27T22:18:53Z",
       "post_date": "2026-07-27",
       "post_date_source": "published",
-      "views_day_start": 1,
-      "views_today": 1
+      "views_day_start": 2,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a669a87ca45b7df56ce6379",
@@ -3251,8 +3651,8 @@
       "views_checked_at": "2026-07-27T22:18:53Z",
       "post_date": "2026-07-27",
       "post_date_source": "published",
-      "views_day_start": 1,
-      "views_today": 1
+      "views_day_start": 2,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a669a7cca45b7df56ce62f3",
@@ -3271,8 +3671,8 @@
       "views_checked_at": "2026-07-27T22:18:53Z",
       "post_date": "2026-07-27",
       "post_date_source": "published",
-      "views_day_start": 2,
-      "views_today": 1
+      "views_day_start": 3,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a669a71ca45b7df56ce623b",
@@ -3291,8 +3691,8 @@
       "views_checked_at": "2026-07-27T22:18:53Z",
       "post_date": "2026-07-27",
       "post_date_source": "published",
-      "views_day_start": 2,
-      "views_today": 1
+      "views_day_start": 3,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a669a5fca45b7df56ce61a8",
@@ -3311,8 +3711,8 @@
       "views_checked_at": "2026-07-27T22:18:53Z",
       "post_date": "2026-07-27",
       "post_date_source": "published",
-      "views_day_start": 1,
-      "views_today": 1
+      "views_day_start": 2,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a669a53ca45b7df56ce60ae",
@@ -3331,8 +3731,8 @@
       "views_checked_at": "2026-07-27T22:18:53Z",
       "post_date": "2026-07-27",
       "post_date_source": "published",
-      "views_day_start": 9,
-      "views_today": 5
+      "views_day_start": 14,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a669a48ca45b7df56ce6045",
@@ -3351,8 +3751,8 @@
       "views_checked_at": "2026-07-27T22:18:53Z",
       "post_date": "2026-07-27",
       "post_date_source": "published",
-      "views_day_start": 2,
-      "views_today": 1
+      "views_day_start": 3,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a669a3dca45b7df56ce5fa8",
@@ -3371,8 +3771,8 @@
       "views_checked_at": "2026-07-27T22:18:53Z",
       "post_date": "2026-07-27",
       "post_date_source": "published",
-      "views_day_start": 2,
-      "views_today": 1
+      "views_day_start": 3,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a669a31ca45b7df56ce5f26",
@@ -3391,8 +3791,8 @@
       "views_checked_at": "2026-07-27T22:18:53Z",
       "post_date": "2026-07-27",
       "post_date_source": "published",
-      "views_day_start": 1,
-      "views_today": 1
+      "views_day_start": 2,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a669a26ca45b7df56ce5e90",
@@ -3411,8 +3811,8 @@
       "views_checked_at": "2026-07-27T22:18:53Z",
       "post_date": "2026-07-27",
       "post_date_source": "published",
-      "views_day_start": 2,
-      "views_today": 1
+      "views_day_start": 3,
+      "views_today": 0
     },
     {
       "key": "Tilnote:knarchive:6a669a1bca45b7df56ce5dd1",
@@ -3431,8 +3831,8 @@
       "views_checked_at": "2026-07-27T22:18:53Z",
       "post_date": "2026-07-27",
       "post_date_source": "published",
-      "views_day_start": 2,
-      "views_today": 1
+      "views_day_start": 3,
+      "views_today": 0
     },
     {
       "key": "WikiDocs:solobizstack:26425",
