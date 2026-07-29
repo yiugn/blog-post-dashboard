@@ -28,6 +28,14 @@ USER_AGENT = "Blog-Post-Dashboard/1.0 (+GitHub Actions)"
 TIMEOUT = 40
 KST = ZoneInfo("Asia/Seoul")
 WIKIDOCS_BLOG = "https://wikidocs.net/blog"
+WIKIDOCS_DASHBOARD_URL = os.environ.get(
+    "WIKIDOCS_DASHBOARD_URL",
+    "https://yiugn.github.io/wikidocs-dashboard/data/dashboard.json",
+)
+WIKIDOCS_SNAPSHOTS_URL = os.environ.get(
+    "WIKIDOCS_SNAPSHOTS_URL",
+    "https://raw.githubusercontent.com/yiugn/wikidocs-dashboard/main/data/snapshots.jsonl",
+)
 
 
 def utc_now() -> str:
@@ -73,6 +81,15 @@ def get_json(session: requests.Session, url: str, attempts: int = 4) -> dict[str
                 raise
             time.sleep(2**attempt)
     raise RuntimeError("unreachable")
+
+
+def get_latest_jsonl(session: requests.Session, url: str) -> dict[str, Any]:
+    response = session.get(url, timeout=TIMEOUT)
+    response.raise_for_status()
+    for line in reversed(response.text.splitlines()):
+        if line.strip():
+            return json.loads(line)
+    raise RuntimeError(f"{url} did not contain JSONL rows")
 
 
 def first_value(item: dict[str, Any], names: tuple[str, ...]) -> Any:
@@ -147,6 +164,82 @@ def scrape_wikidocs_views(slug: str, delay: float = 0.12) -> dict[str, dict[str,
         time.sleep(delay)
 
     return collected
+
+
+def collect_wikidocs_dashboard_snapshot(
+    blogs: list[dict[str, Any]], collected_at: str
+) -> list[dict[str, Any]]:
+    """Reuse the primary Wikidocs analytics snapshot when Actions cannot scrape pages."""
+
+    wiki_by_slug = {
+        blog["slug"]: blog for blog in blogs if blog.get("platform") == "WikiDocs"
+    }
+    session = requests.Session()
+    session.headers.update({"User-Agent": USER_AGENT})
+    source = "raw snapshots"
+    try:
+        payload = get_latest_jsonl(
+            session, f"{WIKIDOCS_SNAPSHOTS_URL}?t={int(time.time())}"
+        )
+    except Exception as exc:  # noqa: BLE001 - fall back to the Pages summary.
+        print(f"WikiDocs raw snapshot deferred ({exc}); using dashboard summary")
+        source = "dashboard summary"
+        payload = get_json(session, f"{WIKIDOCS_DASHBOARD_URL}?t={int(time.time())}")
+    snapshot_at = str(
+        first_value(
+            payload,
+            ("latest_snapshot_at", "static_generated_at", "catalog_updated_at"),
+        )
+        or collected_at
+    )
+
+    rows: list[dict[str, Any]] = []
+    for blog_snapshot in payload.get("blogs", []):
+        if not isinstance(blog_snapshot, dict):
+            continue
+        slug = str(
+            first_value(blog_snapshot, ("slug", "blog_slug", "name_slug")) or ""
+        ).strip()
+        blog = wiki_by_slug.get(slug)
+        if not blog:
+            continue
+        for post in blog_snapshot.get("posts", []):
+            if not isinstance(post, dict):
+                continue
+            post_id = str(first_value(post, ("id", "post_id")) or "").strip()
+            if not post_id:
+                continue
+            views_total = safe_int(first_value(post, ("views", "views_total")))
+            daily_views = safe_int(first_value(post, ("daily_views", "views_today")))
+            rows.append(
+                {
+                    "key": f"WikiDocs:{slug}:{post_id}",
+                    "platform": "WikiDocs",
+                    "slug": slug,
+                    "blog_name": blog["blog_name"],
+                    "blog_url": blog["blog_url"],
+                    "account_masked": blog["account_masked"],
+                    "post_id": post_id,
+                    "title": " ".join(
+                        str(first_value(post, ("title", "subject")) or "(untitled)").split()
+                    ),
+                    "post_url": str(post.get("url") or f"{WIKIDOCS_BLOG}/@{slug}/{post_id}/"),
+                    "thumbnail_url": str(post.get("thumbnail_url") or ""),
+                    "views_total": views_total,
+                    "views_today": daily_views,
+                    "_views_today_override": daily_views,
+                    "views_checked_at": snapshot_at if views_total is not None else "",
+                    "first_seen_at": collected_at,
+                    "last_seen_at": collected_at,
+                }
+            )
+
+    print(
+        f"WikiDocs {source}: {len(rows)} row(s), "
+        f"{sum(1 for row in rows if safe_int(row.get('views_total')) is not None)} "
+        "with view metrics"
+    )
+    return rows
 
 
 def collect_wikidocs(
@@ -388,6 +481,7 @@ def finalise_post(
 
     current_total = safe_int(result.get("views_total"))
     previous_total = safe_int(previous.get("views_total"))
+    today_override = safe_int(result.pop("_views_today_override", None))
     if current_total is None:
         result["views_total"] = None
         result["views_day_start"] = None
@@ -396,6 +490,13 @@ def finalise_post(
         return result
 
     result["views_total"] = current_total
+    if today_override is not None:
+        today_override = min(today_override, current_total)
+        result["views_day_start"] = current_total - today_override
+        result["views_today"] = today_override
+        result["views_checked_at"] = result.get("views_checked_at") or previous.get("views_checked_at") or ""
+        return result
+
     if previous_stats_date == today:
         baseline = safe_int(previous.get("views_day_start"))
         if baseline is None:
@@ -427,39 +528,43 @@ def main() -> int:
     except json.JSONDecodeError as exc:
         raise RuntimeError("WIKIDOCS_BLOGS_JSON is not valid JSON") from exc
 
-    wiki_blogs = [blog for blog in blogs if blog["platform"] == "WikiDocs"]
-    missing = [blog["slug"] for blog in wiki_blogs if not secrets.get(blog["slug"])]
-    if missing:
-        raise RuntimeError("Missing WikiDocs token(s): " + ", ".join(missing))
-
     collected_rows: list[dict[str, Any]] = []
     errors: list[str] = []
-    # WikiDocs public pages can reject bursty GitHub Actions traffic. Keep this
-    # sequential so authenticated list reads and public view scrapes do not hit
-    # the origin as a parallel burst.
-    with ThreadPoolExecutor(max_workers=1) as pool:
-        futures = {
-            pool.submit(
-                collect_wikidocs, blog, secrets[blog["slug"]], known_ids, collected_at
-            ): blog
-            for blog in wiki_blogs
-        }
-        for future in as_completed(futures):
-            blog = futures[future]
-            try:
-                collected_rows.extend(future.result())
-            except Exception as exc:
-                errors.append(f"{blog['blog_name']}: {exc}")
-
-    tilnote = next(blog for blog in blogs if blog["platform"] == "Tilnote")
-    tilnote_state = dict(existing_doc.get("source_state", {}).get("tilnote", {}))
+    wiki_blogs = [blog for blog in blogs if blog["platform"] == "WikiDocs"]
     try:
-        tilnote_posts, tilnote_state = collect_tilnote(
-            tilnote, known_ids, collected_at, tilnote_state
-        )
-        collected_rows.extend(tilnote_posts)
+        collected_rows.extend(collect_wikidocs_dashboard_snapshot(blogs, collected_at))
     except Exception as exc:
-        errors.append(f"{tilnote['blog_name']}: {exc}")
+        errors.append(f"WikiDocs dashboard snapshot: {exc}")
+        missing = [blog["slug"] for blog in wiki_blogs if not secrets.get(blog["slug"])]
+        if missing:
+            raise RuntimeError("Missing WikiDocs token(s): " + ", ".join(missing)) from exc
+        # Fallback for environments where the primary dashboard snapshot is unavailable.
+        with ThreadPoolExecutor(max_workers=1) as pool:
+            futures = {
+                pool.submit(
+                    collect_wikidocs, blog, secrets[blog["slug"]], known_ids, collected_at
+                ): blog
+                for blog in wiki_blogs
+            }
+            for future in as_completed(futures):
+                blog = futures[future]
+                try:
+                    collected_rows.extend(future.result())
+                except Exception as source_exc:
+                    errors.append(f"{blog['blog_name']}: {source_exc}")
+
+    tilnote_state = dict(existing_doc.get("source_state", {}).get("tilnote", {}))
+    if os.environ.get("SKIP_TILNOTE_REFRESH") == "1":
+        print("Tilnote refresh skipped by SKIP_TILNOTE_REFRESH=1")
+    else:
+        tilnote = next(blog for blog in blogs if blog["platform"] == "Tilnote")
+        try:
+            tilnote_posts, tilnote_state = collect_tilnote(
+                tilnote, known_ids, collected_at, tilnote_state
+            )
+            collected_rows.extend(tilnote_posts)
+        except Exception as exc:
+            errors.append(f"{tilnote['blog_name']}: {exc}")
 
     if errors:
         print("Collection completed with deferred source error(s):", file=sys.stderr)
@@ -546,7 +651,7 @@ def main() -> int:
                 (str(row.get("views_checked_at") or "") for row in view_rows),
                 default="",
             ),
-            "note": "Tilnote API 제공 범위 합계. WikiDocs 공식 API는 조회수를 제공하지 않습니다.",
+            "note": "WikiDocs dashboard snapshot plus Tilnote API coverage.",
         },
         "source_state": {"tilnote": tilnote_state},
         "collection_errors": errors,

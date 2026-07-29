@@ -760,7 +760,7 @@ function App() {
                     개 포스트 · {formatNumber(supportedBlogs)} / {formatNumber(totalBlogs)}개 블로그
                   </span>
                   <p className="mt-1 text-[11px] leading-5 text-amber-800/90">
-                    조회수는 WikiDocs 공개 블로그 페이지와 Tilnote 공개 API에서 확인 가능한 포스트만 합산합니다.
+                    조회수는 WikiDocs 조회수 대시보드 스냅샷과 Tilnote 공개 API에서 확인 가능한 포스트만 합산합니다.
                     {!tilnoteHistoryComplete
                       ? ` 현재 Tilnote 이력 재갱신이 진행 중이며, 자동 실행에서 전체 ${formatNumber(tilnoteState?.total_pages)}페이지를 조회수 포함으로 다시 계산합니다.`
                       : ` 현재 조회 지원 포스트 커버리지는 ${coveragePercent}%입니다.`}
