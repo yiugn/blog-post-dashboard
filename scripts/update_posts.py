@@ -183,6 +183,21 @@ def collect_wikidocs(
             published_at = normalise_date(
                 first_value(item, ("create_date", "created_at", "created", "pub_date"))
             )
+            api_views = safe_int(
+                first_value(
+                    item,
+                    (
+                        "view",
+                        "views",
+                        "view_count",
+                        "views_count",
+                        "hit",
+                        "hits",
+                        "hit_count",
+                        "read_count",
+                    ),
+                )
+            )
             result_by_key[key] = {
                 "key": key,
                 "platform": "WikiDocs",
@@ -194,6 +209,8 @@ def collect_wikidocs(
                 "title": title,
                 "post_url": f"https://wikidocs.net/blog/@{blog['slug']}/{post_id}/",
                 "published_at": published_at,
+                "views_total": api_views,
+                "views_checked_at": collected_at if api_views is not None else "",
                 "first_seen_at": collected_at,
                 "last_seen_at": collected_at,
             }
@@ -201,7 +218,11 @@ def collect_wikidocs(
             break
         page += 1
 
-    view_rows = scrape_wikidocs_views(blog["slug"])
+    try:
+        view_rows = scrape_wikidocs_views(blog["slug"])
+    except Exception as exc:  # noqa: BLE001 - keep post metadata if public views are blocked.
+        print(f"WikiDocs @{blog['slug']}: public view scrape deferred ({exc})", file=sys.stderr)
+        view_rows = {}
     for post_id, view_data in view_rows.items():
         key = f"WikiDocs:{blog['slug']}:{post_id}"
         current = result_by_key.get(key, {})
@@ -413,7 +434,10 @@ def main() -> int:
 
     collected_rows: list[dict[str, Any]] = []
     errors: list[str] = []
-    with ThreadPoolExecutor(max_workers=6) as pool:
+    # WikiDocs public pages can reject bursty GitHub Actions traffic. Keep this
+    # sequential so authenticated list reads and public view scrapes do not hit
+    # the origin as a parallel burst.
+    with ThreadPoolExecutor(max_workers=1) as pool:
         futures = {
             pool.submit(
                 collect_wikidocs, blog, secrets[blog["slug"]], known_ids, collected_at
