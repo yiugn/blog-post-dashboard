@@ -177,10 +177,34 @@ def collect_wikidocs_dashboard_snapshot(
     session = requests.Session()
     session.headers.update({"User-Agent": USER_AGENT})
     source = "raw snapshots"
+    daily_by_post: dict[str, int] = {}
     try:
         payload = get_latest_jsonl(
             session, f"{WIKIDOCS_SNAPSHOTS_URL}?t={int(time.time())}"
         )
+        try:
+            summary = get_json(session, f"{WIKIDOCS_DASHBOARD_URL}?t={int(time.time())}")
+            for blog_summary in summary.get("blogs", []):
+                if not isinstance(blog_summary, dict):
+                    continue
+                summary_slug = str(
+                    first_value(blog_summary, ("slug", "blog_slug", "name_slug")) or ""
+                ).strip()
+                if not summary_slug:
+                    continue
+                for post_summary in blog_summary.get("posts", []):
+                    if not isinstance(post_summary, dict):
+                        continue
+                    summary_post_id = str(
+                        first_value(post_summary, ("id", "post_id")) or ""
+                    ).strip()
+                    daily_views = safe_int(
+                        first_value(post_summary, ("daily_views", "views_today"))
+                    )
+                    if summary_post_id and daily_views is not None:
+                        daily_by_post[f"{summary_slug}:{summary_post_id}"] = daily_views
+        except Exception as exc:  # noqa: BLE001 - cumulative snapshot is still useful.
+            print(f"WikiDocs daily summary deferred ({exc})")
     except Exception as exc:  # noqa: BLE001 - fall back to the Pages summary.
         print(f"WikiDocs raw snapshot deferred ({exc}); using dashboard summary")
         source = "dashboard summary"
@@ -211,6 +235,8 @@ def collect_wikidocs_dashboard_snapshot(
                 continue
             views_total = safe_int(first_value(post, ("views", "views_total")))
             daily_views = safe_int(first_value(post, ("daily_views", "views_today")))
+            if daily_views is None:
+                daily_views = daily_by_post.get(f"{slug}:{post_id}")
             rows.append(
                 {
                     "key": f"WikiDocs:{slug}:{post_id}",
