@@ -583,7 +583,7 @@ function App() {
             <MetricCard
               label="지원 범위 누적 조회"
               value={formatCompact(totalViews)}
-              note={`Tilnote ${formatNumber(supportedPosts)}개 포스트 기준`}
+              note={`${formatNumber(supportedPosts)}개 포스트 기준`}
               icon={Eye}
               tone="amber"
             />
@@ -760,9 +760,9 @@ function App() {
                     개 포스트 · {formatNumber(supportedBlogs)} / {formatNumber(totalBlogs)}개 블로그
                   </span>
                   <p className="mt-1 text-[11px] leading-5 text-amber-800/90">
-                    조회수는 Tilnote 공개 API 제공 포스트만 합산합니다. WikiDocs는 공식 API에서 조회수를 제공하지 않으므로 발행량만 집계합니다.
+                    조회수는 WikiDocs 공개 블로그 페이지와 Tilnote 공개 API에서 확인 가능한 포스트만 합산합니다.
                     {!tilnoteHistoryComplete
-                      ? ` 현재 Tilnote 이력 재갱신이 진행 중이며, 다음 자동 실행에서 전체 ${formatNumber(tilnoteState?.total_pages)}페이지를 조회수 포함으로 다시 계산합니다.`
+                      ? ` 현재 Tilnote 이력 재갱신이 진행 중이며, 자동 실행에서 전체 ${formatNumber(tilnoteState?.total_pages)}페이지를 조회수 포함으로 다시 계산합니다.`
                       : ` 현재 조회 지원 포스트 커버리지는 ${coveragePercent}%입니다.`}
                   </p>
                 </div>

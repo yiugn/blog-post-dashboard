@@ -6,15 +6,18 @@ from __future__ import annotations
 import csv
 import json
 import os
+import re
 import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from urllib.parse import quote, urljoin
 from zoneinfo import ZoneInfo
 
 import requests
+from bs4 import BeautifulSoup
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG_PATH = ROOT / "config" / "blogs.json"
@@ -23,6 +26,7 @@ CSV_PATH = ROOT / "data" / "posts.csv"
 USER_AGENT = "Blog-Post-Dashboard/1.0 (+GitHub Actions)"
 TIMEOUT = 40
 KST = ZoneInfo("Asia/Seoul")
+WIKIDOCS_BLOG = "https://wikidocs.net/blog"
 
 
 def utc_now() -> str:
@@ -84,6 +88,65 @@ def normalise_date(value: Any) -> str:
     return str(value)
 
 
+def parse_wikidocs_public_page(html: str, slug: str, page_no: int) -> tuple[int, list[dict[str, Any]]]:
+    soup = BeautifulSoup(html, "html.parser")
+    max_page = page_no
+    for anchor in soup.select(".page-link"):
+        try:
+            max_page = max(max_page, int(anchor.get("data-page") or 0))
+        except ValueError:
+            continue
+
+    posts: list[dict[str, Any]] = []
+    href_re = re.compile(rf"^/blog/@{re.escape(slug)}/(\d+)/")
+    for anchor in soup.find_all("a", href=True):
+        match = href_re.match(anchor["href"])
+        if not match:
+            continue
+        card = anchor.select_one("div.rounded-md") or anchor
+        meta = card.select_one("div.mt-4.text-sm")
+        meta_text = meta.get_text(" ", strip=True) if meta else ""
+        numbers = [int(num.replace(",", "")) for num in re.findall(r"\d[\d,]*", meta_text)]
+        if len(numbers) < 3:
+            continue
+        title_el = card.select_one("h2")
+        posts.append(
+            {
+                "post_id": str(match.group(1)),
+                "title": " ".join((title_el.get_text(" ", strip=True) if title_el else "").split()),
+                "post_url": f"{WIKIDOCS_BLOG}/@{slug}/{match.group(1)}/",
+                "thumbnail_url": urljoin("https://wikidocs.net", (card.select_one("img") or {}).get("src", "")),
+                "views_total": numbers[-3],
+                "likes": numbers[-2],
+                "comments": numbers[-1],
+                "source_page": page_no,
+            }
+        )
+    return max_page, posts
+
+
+def scrape_wikidocs_views(slug: str, delay: float = 0.12) -> dict[str, dict[str, Any]]:
+    session = requests.Session()
+    session.headers.update({"User-Agent": USER_AGENT})
+    collected: dict[str, dict[str, Any]] = {}
+    page_no = 1
+    discovered_pages = 1
+
+    while True:
+        url = f"{WIKIDOCS_BLOG}/@{quote(slug)}/?page={page_no}&sort=recent"
+        response = session.get(url, timeout=TIMEOUT)
+        response.raise_for_status()
+        discovered_pages, posts = parse_wikidocs_public_page(response.text, slug, page_no)
+        for post in posts:
+            collected[post["post_id"]] = post
+        if page_no >= discovered_pages:
+            break
+        page_no += 1
+        time.sleep(delay)
+
+    return collected
+
+
 def collect_wikidocs(
     blog: dict[str, Any], token: str, known_ids: set[str], collected_at: str
 ) -> list[dict[str, Any]]:
@@ -96,7 +159,7 @@ def collect_wikidocs(
             f"@{blog['slug']}: token belongs to @{actual_slug or 'unknown'}, collection stopped"
         )
 
-    result: list[dict[str, Any]] = []
+    result_by_key: dict[str, dict[str, Any]] = {}
     page = 1
     saw_known = False
     while True:
@@ -118,29 +181,50 @@ def collect_wikidocs(
             published_at = normalise_date(
                 first_value(item, ("create_date", "created_at", "created", "pub_date"))
             )
-            result.append(
-                {
-                    "key": key,
-                    "platform": "WikiDocs",
-                    "slug": blog["slug"],
-                    "blog_name": blog["blog_name"],
-                    "blog_url": blog["blog_url"],
-                    "account_masked": blog["account_masked"],
-                    "post_id": post_id,
-                    "title": title,
-                    "post_url": f"https://wikidocs.net/blog/@{blog['slug']}/{post_id}/",
-                    "published_at": published_at,
-                    "views_total": None,
-                    "views_checked_at": "",
-                    "first_seen_at": collected_at,
-                    "last_seen_at": collected_at,
-                }
-            )
+            result_by_key[key] = {
+                "key": key,
+                "platform": "WikiDocs",
+                "slug": blog["slug"],
+                "blog_name": blog["blog_name"],
+                "blog_url": blog["blog_url"],
+                "account_masked": blog["account_masked"],
+                "post_id": post_id,
+                "title": title,
+                "post_url": f"https://wikidocs.net/blog/@{blog['slug']}/{post_id}/",
+                "published_at": published_at,
+                "first_seen_at": collected_at,
+                "last_seen_at": collected_at,
+            }
         if saw_known:
             break
         page += 1
-    print(f"WikiDocs @{blog['slug']}: {len(result)} new post(s), scanned {page} page(s)")
-    return result
+
+    view_rows = scrape_wikidocs_views(blog["slug"])
+    for post_id, view_data in view_rows.items():
+        key = f"WikiDocs:{blog['slug']}:{post_id}"
+        current = result_by_key.get(key, {})
+        result_by_key[key] = {
+            **current,
+            "key": key,
+            "platform": "WikiDocs",
+            "slug": blog["slug"],
+            "blog_name": blog["blog_name"],
+            "blog_url": blog["blog_url"],
+            "account_masked": blog["account_masked"],
+            "post_id": post_id,
+            "title": current.get("title") or view_data.get("title") or "(제목 없음)",
+            "post_url": current.get("post_url") or view_data.get("post_url") or f"{WIKIDOCS_BLOG}/@{blog['slug']}/{post_id}/",
+            "views_total": safe_int(view_data.get("views_total")),
+            "views_checked_at": collected_at,
+            "first_seen_at": current.get("first_seen_at") or collected_at,
+            "last_seen_at": collected_at,
+        }
+
+    print(
+        f"WikiDocs @{blog['slug']}: {len(result_by_key)} row(s), "
+        f"{len(view_rows)} with view metrics, scanned {page} API page(s)"
+    )
+    return list(result_by_key.values())
 
 
 def fetch_tilnote_page(user_id: str, page: int) -> tuple[int, list[dict[str, Any]], int]:
