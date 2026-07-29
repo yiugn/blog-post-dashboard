@@ -18,6 +18,7 @@ from zoneinfo import ZoneInfo
 
 import requests
 from bs4 import BeautifulSoup
+from curl_cffi import requests as curl_requests
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG_PATH = ROOT / "config" / "blogs.json"
@@ -126,7 +127,7 @@ def parse_wikidocs_public_page(html: str, slug: str, page_no: int) -> tuple[int,
 
 
 def scrape_wikidocs_views(slug: str, delay: float = 0.12) -> dict[str, dict[str, Any]]:
-    session = requests.Session()
+    session = curl_requests.Session(impersonate="chrome124", verify=False)
     session.headers.update({"User-Agent": USER_AGENT})
     collected: dict[str, dict[str, Any]] = {}
     page_no = 1
@@ -136,7 +137,8 @@ def scrape_wikidocs_views(slug: str, delay: float = 0.12) -> dict[str, dict[str,
         url = f"{WIKIDOCS_BLOG}/@{quote(slug)}/?page={page_no}&sort=recent"
         response = session.get(url, timeout=TIMEOUT)
         response.raise_for_status()
-        discovered_pages, posts = parse_wikidocs_public_page(response.text, slug, page_no)
+        html = response.content.decode("utf-8", "replace")
+        discovered_pages, posts = parse_wikidocs_public_page(html, slug, page_no)
         for post in posts:
             collected[post["post_id"]] = post
         if page_no >= discovered_pages:
