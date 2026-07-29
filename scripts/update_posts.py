@@ -172,12 +172,10 @@ def collect_tilnote(
     completed_pages.add(1)
     all_rows: list[dict[str, Any]] = list(first_rows)
     history_complete = bool(previous_state.get("history_complete"))
-    missing_pages = [page for page in range(1, last_page + 1) if page not in completed_pages]
-    pages_to_fetch = (
-        list(range(2, last_page + 1))
-        if history_complete
-        else missing_pages
-    )
+    # View counts are mutable. Refresh every Tilnote page on every run instead
+    # of only filling missing history pages, otherwise the dashboard can show a
+    # tiny subset of posts as the "live" view total during bootstrap.
+    pages_to_fetch = list(range(2, last_page + 1))
 
     failed_pages: list[int] = []
     if pages_to_fetch:
@@ -238,16 +236,17 @@ def collect_tilnote(
             }
         )
     remaining = last_page - len(completed_pages)
+    next_history_complete = remaining == 0
     state = {
         "total_pages": last_page,
         "completed_pages": sorted(completed_pages),
         "completed_count": len(completed_pages),
         "remaining_pages": remaining,
-        "history_complete": remaining == 0,
+        "history_complete": next_history_complete,
         "last_attempt_at": collected_at,
         "last_full_refresh_at": (
             collected_at
-            if history_complete and not failed_pages
+            if next_history_complete and not failed_pages
             else previous_state.get("last_full_refresh_at", "")
         ),
     }

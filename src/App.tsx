@@ -130,7 +130,7 @@ function Sidebar({
     { label: "대시보드", icon: CircleGauge, href: "#overview" },
     { label: "전체 포스트", icon: FileText, href: "#posts" },
     { label: "블로그 분석", icon: BarChart3, href: "#blogs" },
-    { label: "실시간 조회", icon: Activity, href: "#overview" },
+    { label: "매시간 조회", icon: Activity, href: "#coverage" },
     { label: "수집 상태", icon: Database, href: "#coverage" },
   ];
 
@@ -467,6 +467,13 @@ function App() {
     data.posts.filter(
       (post) => post.views_total !== null && post.views_total !== undefined,
     ).length;
+  const supportedBlogs = data.views?.supported_blogs ?? 0;
+  const totalBlogs = data.views?.total_blogs ?? (data.blog_count || blogStats.length);
+  const coveragePercent = totalPosts
+    ? Math.round((supportedPosts / totalPosts) * 1000) / 10
+    : 0;
+  const tilnoteState = data.source_state?.tilnote;
+  const tilnoteHistoryComplete = Boolean(tilnoteState?.history_complete);
   const maxBlogPosts = Math.max(
     1,
     ...blogStats.map((row) => row.postsTotal),
@@ -544,8 +551,7 @@ function App() {
                   블로그 포스트 통합 현황
                 </h2>
                 <p className="mt-3 text-sm text-slate-300">
-                  발행량, 누적 조회수, 당일 성장률을 실시간에 가깝게
-                  추적합니다.
+                  발행량과 지원 가능한 조회 지표를 매시간 새로 계산합니다.
                 </p>
               </div>
               <div className="relative text-left lg:text-right">
@@ -575,14 +581,14 @@ function App() {
               tone="blue"
             />
             <MetricCard
-              label="누적 조회수"
+              label="지원 범위 누적 조회"
               value={formatCompact(totalViews)}
-              note={`조회 지원 ${formatNumber(supportedPosts)}개 포스트`}
+              note={`Tilnote ${formatNumber(supportedPosts)}개 포스트 기준`}
               icon={Eye}
               tone="amber"
             />
             <MetricCard
-              label="오늘 조회수"
+              label="지원 범위 오늘 조회"
               value={formatCompact(todayViews)}
               note="당일 시작 스냅샷 대비"
               icon={Activity}
@@ -684,8 +690,8 @@ function App() {
                       <TableHead>플랫폼</TableHead>
                       <TableHead className="text-right">전체 글</TableHead>
                       <TableHead className="text-right">오늘</TableHead>
-                      <TableHead className="text-right">누적 조회</TableHead>
-                      <TableHead className="text-right">오늘 조회</TableHead>
+                      <TableHead className="text-right">지원 누적 조회</TableHead>
+                      <TableHead className="text-right">지원 오늘 조회</TableHead>
                       <TableHead className="min-w-[120px]">발행 비중</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -744,22 +750,24 @@ function App() {
           </section>
 
           <section id="coverage" className="mt-5 scroll-mt-5">
-            <div className="flex flex-col gap-3 rounded-2xl border border-emerald-200/70 bg-emerald-50/70 px-5 py-4 text-xs text-emerald-950 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col gap-3 rounded-2xl border border-amber-200/80 bg-amber-50/80 px-5 py-4 text-xs text-amber-950 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-start gap-3">
-                <Database className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+                <Database className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
                 <div>
                   <strong>조회수 집계 범위</strong>
-                  <span className="ml-2 text-emerald-800">
+                  <span className="ml-2 text-amber-800">
                     {formatNumber(supportedPosts)} / {formatNumber(totalPosts)}
-                    개 포스트
+                    개 포스트 · {formatNumber(supportedBlogs)} / {formatNumber(totalBlogs)}개 블로그
                   </span>
-                  <p className="mt-1 text-[11px] leading-5 text-emerald-800/80">
-                    Tilnote 공개 API 제공 범위를 매시간 갱신합니다. WikiDocs는
-                    공식 API에서 조회수를 제공하지 않습니다.
+                  <p className="mt-1 text-[11px] leading-5 text-amber-800/90">
+                    조회수는 Tilnote 공개 API 제공 포스트만 합산합니다. WikiDocs는 공식 API에서 조회수를 제공하지 않으므로 발행량만 집계합니다.
+                    {!tilnoteHistoryComplete
+                      ? ` 현재 Tilnote 이력 재갱신이 진행 중이며, 다음 자동 실행에서 전체 ${formatNumber(tilnoteState?.total_pages)}페이지를 조회수 포함으로 다시 계산합니다.`
+                      : ` 현재 조회 지원 포스트 커버리지는 ${coveragePercent}%입니다.`}
                   </p>
                 </div>
               </div>
-              <div className="shrink-0 text-[10px] text-emerald-800/70">
+              <div className="shrink-0 text-[10px] text-amber-800/70">
                 마지막 확인 {formatDate(data.views?.checked_at, true)}
               </div>
             </div>
@@ -858,8 +866,8 @@ function App() {
                         <TableHead className="whitespace-nowrap">
                           발행일
                         </TableHead>
-                        <TableHead className="text-right">누적 조회</TableHead>
-                        <TableHead className="text-right">오늘 조회</TableHead>
+                        <TableHead className="text-right">지원 누적 조회</TableHead>
+                        <TableHead className="text-right">지원 오늘 조회</TableHead>
                         <TableHead>
                           <span className="sr-only">열기</span>
                         </TableHead>
